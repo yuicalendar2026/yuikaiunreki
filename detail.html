@@ -66,8 +66,6 @@ function updateDate(){
   document.getElementById("date").innerText =
     y + "年" + m + "月" + d + "日";
 }
-
-updateDate();
 <script>
 function getMoonPhase(date){
   const lp = 2551443; // 月の周期（秒）
@@ -84,6 +82,7 @@ function updateMoon(){
   if(el){ el.innerText = moon; }
 }
 updateMoon();
+updateDate();
 </script>
 
 </body>
