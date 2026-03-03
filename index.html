@@ -125,8 +125,16 @@ function renderCalendar(){
     cell.innerText=day;
 
     cell.onclick=function(){
-      showFortune(day);
-    };
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth()+1;
+
+  const dateString =
+    year + "-" +
+    String(month).padStart(2,"0") + "-" +
+    String(day).padStart(2,"0");
+
+  window.location.href = "detail.html?date=" + dateString;
+};
 
     calendar.appendChild(cell);
   }
