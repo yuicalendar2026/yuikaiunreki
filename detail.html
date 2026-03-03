@@ -58,6 +58,22 @@ function updateDate(){
 }
 
 updateDate();
+<script>
+function getMoonPhase(date){
+  const lp = 2551443; // 月の周期（秒）
+  const new_moon = new Date(1970,0,7,20,35,0); 
+  const phase = ((date - new_moon) / 1000) % lp;
+  const index = Math.floor((phase / lp) * 8);
+  const names = ["新月","三日月","上弦","十三夜","満月","十六夜","下弦","晦"];
+  return names[index];
+}
+
+function updateMoon(){
+  const moon = getMoonPhase(currentDate);
+  const el = document.getElementById("moon");
+  if(el){ el.innerText = moon; }
+}
+updateMoon();
 </script>
 
 </body>
