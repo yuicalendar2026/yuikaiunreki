@@ -9,13 +9,19 @@
 body{
   margin:0;
   background:#f7f3ed;
-  font-family: "Hiragino Mincho ProN", serif;
+  font-family:"Hiragino Mincho ProN", serif;
+  text-align:center;
+}
+
+.date-title{
+  margin-top:20px;
+  font-size:20px;
 }
 
 .cover{
   width:100%;
   max-width:500px;
-  margin:0 auto;
+  margin:20px auto;
 }
 
 .cover img{
@@ -27,9 +33,26 @@ body{
 
 <body>
 
+<div class="date-title" id="dateTitle"></div>
+
 <div class="cover">
-<img src="42F56C68-29E9-40D0-BC1D-5EDE65F155C9.png">
+  <img src="cover.jpg">
 </div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const date = params.get("date");
+
+if(date){
+  const d = new Date(date);
+  const text =
+    d.getFullYear() + "年" +
+    (d.getMonth()+1) + "月" +
+    d.getDate() + "日";
+
+  document.getElementById("dateTitle").innerText = text;
+}
+</script>
 
 </body>
 </html>
