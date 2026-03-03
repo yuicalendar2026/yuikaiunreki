@@ -1,1 +1,143 @@
-detail.html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>結 - 開運暦</title>
+
+<style>
+.card{
+  margin-bottom:100px;
+}
+.compass{
+  position:relative;
+  width:200px;
+  height:200px;
+  margin:20px auto;
+  border-radius:50%;
+  border:2px solid #d8c3a5;
+}
+
+.compass div{
+  position:absolute;
+  font-size:18px;
+}
+
+.north{ top:10px; left:50%; transform:translateX(-50%); }
+.south{ bottom:10px; left:50%; transform:translateX(-50%); }
+.east{ right:10px; top:50%; transform:translateY(-50%); }
+.west{ left:10px; top:50%; transform:translateY(-50%); }
+
+.lucky-love{ color:#c94f4f; font-weight:bold; }
+.lucky-money{ color:#c9a646; font-weight:bold; }
+body{
+  margin:0;
+  background:#f7f3ed;
+  font-family:"Hiragino Mincho ProN", serif;
+  text-align:center;
+  padding-bottom:40px;
+}
+
+.date-title{
+  margin-top:20px;
+  font-size:20px;
+}
+
+.cover{
+  width:100%;
+  max-width:500px;
+  margin:20px auto;
+}
+
+.cover img{
+  width:100%;
+  display:block;
+}
+
+.fortune-box{
+  background:white;
+  margin:15px auto;
+  padding:15px;
+  max-width:500px;
+  border-radius:12px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.08);
+  text-align:left;
+  font-size:15px;
+  line-height:1.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="date-title" id="dateTitle"></div>
+
+<div class="cover">
+  <img src="cover.jpg">
+</div>
+
+<div class="fortune-box" id="fortuneBox"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const date = params.get("date");
+
+if(date){
+
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = d.getMonth()+1;
+  const day = d.getDate();
+
+  // 日付表示
+  document.getElementById("dateTitle").innerText =
+    year + "年" + month + "月" + day + "日";
+
+  // 六曜（簡易）
+  const rokuyoList = ["大安","赤口","先勝","友引","先負","仏滅"];
+  const rokuyo = rokuyoList[(day + month) % 6];
+
+  // 数秘（日運）
+  const numerology = (year + month + day)
+    .toString()
+    .split("")
+    .reduce((a,b)=>a+Number(b),0) % 9 + 1;
+
+  // 吉方位（簡易ランダム）
+  const directions = ["北","北東","東","南東","南","南西","西","北西"];
+  const luckyDirection = directions[(day + numerology) % 8];
+
+  // 天赦日っぽい演出（簡易）
+  const specialDay =
+    (day === 1 || day === 15) ? "🌟 特別な開運日" : "―";
+
+  // 月相（簡易）
+  const moon =
+    (day < 15) ? "🌑 新月に向かう期間" : "🌕 満月に向かう期間";
+
+  // 二十四節気（超簡易）
+  const season =
+    (month===3||month===4)?"春の気配":
+    (month===6||month===7)?"夏の気配":
+    (month===9||month===10)?"秋の気配":
+    "冬の気配";
+
+  document.getElementById("fortuneBox").innerHTML = `
+    🔮 今日の吉方位：${luckyDirection}<br>
+    🔢 数秘（日運）：${numerology}<br>
+    🌟 特別日：${specialDay}<br>
+    🌑 月の流れ：${moon}<br>
+    📅 六曜：${rokuyo}<br>
+    🍃 季節の気：${season}
+  `;
+}
+</script>
+<nav class="bottom-nav">
+  <a href="index.html">🏠<br>ホーム</a>
+  <a href="index.html">📅<br>カレンダー</a>
+  <a href="#">🧭<br>吉方位</a>
+  <a href="#">🔢<br>数秘</a>
+  <a href="#">✉️<br>メッセージ</a>
+</nav>
+</body>
+</html>
