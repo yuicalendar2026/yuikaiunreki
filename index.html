@@ -50,81 +50,51 @@ button{background:#7a1f1f;color:white;border:none;padding:6px 12px;border-radius
 </div>
 
 <script>
-const baseDate=new Date(2026,0,1);
-const directions=["東","東南","西","東・東南","西・東","東南・西"];
-const rokuyoList=["大安","赤口","先勝","友引","先負","仏滅"];
-const luckyDays=["2026-03-05","2026-05-04","2026-07-19","2026-10-01"];
-const sekki={
-"2026-02-04":"立春",
-"2026-03-20":"春分",
-"2026-06-21":"夏至",
-"2026-09-23":"秋分",
-"2026-12-22":"冬至"
-};
-
-const numerologyMessages={
-1:"小さな一歩を踏み出してみましょう。",
-2:"人との調和を大切にしてみましょう。",
-3:"思いを言葉にしてみましょう。",
-4:"足元を整えてみましょう。",
-5:"新しいことを試してみましょう。",
-6:"身近な人に優しくしてみましょう。",
-7:"静かな時間を作ってみましょう。",
-8:"決断してみましょう。",
-9:"感謝して手放してみましょう。"
-};
-
-function updateToday(){
-const today=new Date();
-const diff=Math.floor((today-baseDate)/(1000*60*60*24));
-const num=((diff%9)+9)%9+1;
-const iso=today.toISOString().split("T")[0];
-
-document.getElementById("date").innerText=today.toLocaleDateString("ja-JP");
-document.getElementById("rokuyo").innerText="六曜："+rokuyoList[((diff%6)+6)%6];
-document.getElementById("direction").innerText=directions[((diff%directions.length)+directions.length)%directions.length];
-document.getElementById("numerology").innerText=num;
-document.getElementById("message").innerText=numerologyMessages[num];
-
-let extra="";
-if(luckyDays.includes(iso)) extra+="🌟 吉日です。行動してみましょう。<br>";
-if(sekki[iso]) extra+="🍃 二十四節気："+sekki[iso];
-document.getElementById("extra").innerHTML=extra;
-}
-
-let currentMonth=new Date();
-
-function renderCalendar(){
-const year=currentMonth.getFullYear();
-const month=currentMonth.getMonth();
-const firstDay=new Date(year,month,1);
-const lastDay=new Date(year,month+1,0);
-
-const cal=document.getElementById("calendar");
-cal.innerHTML="";
-
-document.getElementById("monthLabel").innerText=year+"年"+(month+1)+"月";
-
-for(let i=0;i<firstDay.getDay();i++){
-cal.innerHTML+="<div></div>";
-}
-
-for(let d=1;d<=lastDay.getDate();d++){
-const date=new Date(year,month,d);
-const iso=date.toISOString().split("T")[0];
-let className="day";
-if(date.toDateString()===new Date().toDateString()) className+=" today";
-if(luckyDays.includes(iso)) className+=" lucky";
-cal.innerHTML+=`<div class="${className}">${d}</div>`;
-}
-}
+let currentMonth = new Date();
 
 function changeMonth(offset){
-currentMonth.setMonth(currentMonth.getMonth()+offset);
-renderCalendar();
+  currentMonth.setMonth(currentMonth.getMonth()+offset);
+  renderCalendar();
 }
 
-updateToday();
+function showFortune(day){
+  const fortunes=["大吉","中吉","小吉","吉","末吉","凶"];
+  const random=fortunes[(day+currentMonth.getMonth())%fortunes.length];
+  document.getElementById("fortuneResult").innerText=
+    currentMonth.getFullYear()+"年"+
+    (currentMonth.getMonth()+1)+"月"+
+    day+"日 の運勢： "+random;
+}
+
+function renderCalendar(){
+  const year=currentMonth.getFullYear();
+  const month=currentMonth.getMonth();
+  document.getElementById("monthLabel").innerText=
+    year+"年"+(month+1)+"月";
+
+  const calendar=document.getElementById("calendar");
+  calendar.innerHTML="";
+
+  const firstDay=new Date(year,month,1).getDay();
+  const lastDate=new Date(year,month+1,0).getDate();
+
+  for(let i=0;i<firstDay;i++){
+    const empty=document.createElement("div");
+    calendar.appendChild(empty);
+  }
+
+  for(let day=1;day<=lastDate;day++){
+    const cell=document.createElement("div");
+    cell.innerText=day;
+    cell.style.padding="10px";
+    cell.style.cursor="pointer";
+    cell.onclick=function(){
+      showFortune(day);
+    };
+    calendar.appendChild(cell);
+  }
+}
+
 renderCalendar();
 </script>
 
