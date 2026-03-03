@@ -1,125 +1,131 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>結 開運暦</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: serif;
-      background: #f8f4ed;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-      border: 2px solid #d4af37;
-    }
-    h1 {
-      color: #7a1f1f;
-      letter-spacing: 4px;
-    }
-    .circle {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 4px solid #d4af37;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 20px auto;
-      font-size: 20px;
-      color: #2f5d50;
-    }
-    .gold {
-      color: #d4af37;
-      font-size: 36px;
-      font-weight: bold;
-    }
-    .small {
-      font-size: 14px;
-      color: #666;
-    }
-    .footer {
-      font-size: 12px;
-      color: #aaa;
-      margin-top: 20px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>結 開運暦</title>
+<style>
+body{margin:0;font-family:serif;background:#f8f4ed;color:#333}
+.container{max-width:420px;margin:0 auto;padding:20px}
+.card{background:#fff;border:2px solid #d4af37;border-radius:20px;padding:20px;margin-bottom:20px;box-shadow:0 8px 20px rgba(0,0,0,0.08)}
+h1{text-align:center;color:#7a1f1f;letter-spacing:4px}
+.center{text-align:center}
+.circle{width:110px;height:110px;border-radius:50%;border:4px solid #d4af37;display:flex;align-items:center;justify-content:center;margin:15px auto;font-size:18px;color:#2f5d50}
+.gold{color:#d4af37;font-size:34px;font-weight:bold}
+.small{font-size:13px;color:#666}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:12px}
+.day{padding:6px;text-align:center;border-radius:8px}
+.today{background:#7a1f1f;color:#fff}
+.lucky{background:#d4af37;color:#fff}
+.footer{text-align:center;font-size:12px;color:#aaa;margin-top:20px}
+button{background:#7a1f1f;color:white;border:none;padding:6px 12px;border-radius:10px;margin:5px}
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>結 開運暦</h1>
-    <p id="date"></p>
-    <p id="rokuyo"></p>
+<div class="container">
 
-    <div>
-      <p class="small">本日の吉方位</p>
-      <div class="circle" id="direction"></div>
-    </div>
+<h1>結 開運暦</h1>
 
-    <div>
-      <p class="small">今日の数秘</p>
-      <div class="gold" id="numerology"></div>
-      <p class="small" id="message"></p>
-    </div>
+<div class="card center">
+<p id="date"></p>
+<p id="rokuyo"></p>
+<div class="circle" id="direction"></div>
+<p class="small">今日の数秘</p>
+<div class="gold" id="numerology"></div>
+<p class="small" id="message"></p>
+<p id="extra"></p>
+</div>
 
-    <div id="moon"></div>
+<div class="card">
+<div class="center">
+<button onclick="changeMonth(-1)">◀</button>
+<span id="monthLabel"></span>
+<button onclick="changeMonth(1)">▶</button>
+</div>
+<div class="calendar" id="calendar"></div>
+</div>
 
-    <div class="footer">
-      制作：結
-    </div>
-  </div>
+<div class="footer">制作：結</div>
+
+</div>
 
 <script>
-const baseDate = new Date(2026,0,1);
-const directions = ["東","東南","西","東・東南","西・東","東南・西"];
-const rokuyoList = ["大安","赤口","先勝","友引","先負","仏滅"];
-
-const numerologyMessages = {
- 1:"小さな一歩を踏み出してみましょう。",
- 2:"人との調和を大切にしてみましょう。",
- 3:"思いを言葉にしてみましょう。",
- 4:"足元を整えてみましょう。",
- 5:"新しいことを試してみましょう。",
- 6:"身近な人に優しくしてみましょう。",
- 7:"静かな時間を作ってみましょう。",
- 8:"決断してみましょう。",
- 9:"感謝して手放してみましょう。"
+const baseDate=new Date(2026,0,1);
+const directions=["東","東南","西","東・東南","西・東","東南・西"];
+const rokuyoList=["大安","赤口","先勝","友引","先負","仏滅"];
+const luckyDays=["2026-03-05","2026-05-04","2026-07-19","2026-10-01"];
+const sekki={
+"2026-02-04":"立春",
+"2026-03-20":"春分",
+"2026-06-21":"夏至",
+"2026-09-23":"秋分",
+"2026-12-22":"冬至"
 };
 
-const newMoons = ["2026-01-19","2026-02-17","2026-03-19"];
-const fullMoons = ["2026-01-03","2026-02-02","2026-03-03"];
+const numerologyMessages={
+1:"小さな一歩を踏み出してみましょう。",
+2:"人との調和を大切にしてみましょう。",
+3:"思いを言葉にしてみましょう。",
+4:"足元を整えてみましょう。",
+5:"新しいことを試してみましょう。",
+6:"身近な人に優しくしてみましょう。",
+7:"静かな時間を作ってみましょう。",
+8:"決断してみましょう。",
+9:"感謝して手放してみましょう。"
+};
 
-function update() {
- const today = new Date();
- const diff = Math.floor((today - baseDate)/(1000*60*60*24));
- const num = ((diff % 9)+9)%9+1;
+function updateToday(){
+const today=new Date();
+const diff=Math.floor((today-baseDate)/(1000*60*60*24));
+const num=((diff%9)+9)%9+1;
+const iso=today.toISOString().split("T")[0];
 
- document.getElementById("date").innerText = today.toLocaleDateString("ja-JP");
- document.getElementById("rokuyo").innerText = "六曜：" + rokuyoList[((diff%6)+6)%6];
- document.getElementById("direction").innerText = directions[((diff%directions.length)+directions.length)%directions.length];
- document.getElementById("numerology").innerText = num;
- document.getElementById("message").innerText = numerologyMessages[num];
+document.getElementById("date").innerText=today.toLocaleDateString("ja-JP");
+document.getElementById("rokuyo").innerText="六曜："+rokuyoList[((diff%6)+6)%6];
+document.getElementById("direction").innerText=directions[((diff%directions.length)+directions.length)%directions.length];
+document.getElementById("numerology").innerText=num;
+document.getElementById("message").innerText=numerologyMessages[num];
 
- const iso = today.toISOString().split("T")[0];
- if(newMoons.includes(iso)){
-   document.getElementById("moon").innerHTML = "🌑 新月です。願いを書いてみましょう。";
- } else if(fullMoons.includes(iso)){
-   document.getElementById("moon").innerHTML = "🌕 満月です。感謝を伝えてみましょう。";
- }
+let extra="";
+if(luckyDays.includes(iso)) extra+="🌟 吉日です。行動してみましょう。<br>";
+if(sekki[iso]) extra+="🍃 二十四節気："+sekki[iso];
+document.getElementById("extra").innerHTML=extra;
 }
 
-update();
+let currentMonth=new Date();
+
+function renderCalendar(){
+const year=currentMonth.getFullYear();
+const month=currentMonth.getMonth();
+const firstDay=new Date(year,month,1);
+const lastDay=new Date(year,month+1,0);
+
+const cal=document.getElementById("calendar");
+cal.innerHTML="";
+
+document.getElementById("monthLabel").innerText=year+"年"+(month+1)+"月";
+
+for(let i=0;i<firstDay.getDay();i++){
+cal.innerHTML+="<div></div>";
+}
+
+for(let d=1;d<=lastDay.getDate();d++){
+const date=new Date(year,month,d);
+const iso=date.toISOString().split("T")[0];
+let className="day";
+if(date.toDateString()===new Date().toDateString()) className+=" today";
+if(luckyDays.includes(iso)) className+=" lucky";
+cal.innerHTML+=`<div class="${className}">${d}</div>`;
+}
+}
+
+function changeMonth(offset){
+currentMonth.setMonth(currentMonth.getMonth()+offset);
+renderCalendar();
+}
+
+updateToday();
+renderCalendar();
 </script>
 
 </body>
