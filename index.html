@@ -3,299 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>結 開運暦</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<title>結 - 開運暦</title>
 
 <style>
 body{
   margin:0;
-  font-family:'Noto Serif JP',serif;
-  background:linear-gradient(180deg,#fdfbf7,#f5efe6);
-  color:#2c2c2c;
-  transition:background 1.2s ease;
-}
-
-.fade-in{
-  animation:fadeIn 1.5s ease forwards;
-  opacity:0;
-}
-@keyframes fadeIn{to{opacity:1;}}
-
-#particles{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  z-index:-1;
-}
-
-.container{
-  max-width:420px;
-  margin:0 auto;
-  padding:30px 20px;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#fdfaf6;
+  text-align:center;
 }
 
 h1{
-  text-align:center;
-  font-size:26px;
-  letter-spacing:8px;
-  color:#5a1e1e;
-  margin-bottom:30px;
+  margin-top:20px;
+  font-size:24px;
 }
 
-.card{
-  background:rgba(255,255,255,0.85);
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(212,175,55,0.4);
-  border-radius:28px;
-  padding:25px;
-  margin-bottom:25px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.06),
-             inset 0 0 30px rgba(212,175,55,0.08);
-  transition:all 0.8s ease;
+.month-control{
+  margin:20px 0;
+  font-size:18px;
 }
 
-.center{text-align:center}
-
-.circle{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  background:radial-gradient(circle,#fff,#f4e8c8);
-  border:2px solid rgba(212,175,55,0.6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:20px auto;
-  font-size:20px;
-  color:#2f5d50;
-  box-shadow:0 0 20px rgba(212,175,55,0.4);
-  animation:glow 4s infinite alternate;
-}
-@keyframes glow{
-  from{box-shadow:0 0 15px rgba(212,175,55,0.3);}
-  to{box-shadow:0 0 35px rgba(212,175,55,0.6);}
+button{
+  padding:6px 12px;
+  margin:0 10px;
+  font-size:16px;
+  border:none;
+  border-radius:6px;
+  background:#c8a96a;
+  color:white;
+  cursor:pointer;
 }
 
-.gold{
-  color:#c6a236;
-  font-size:42px;
-  font-weight:600;
-  letter-spacing:4px;
+button:hover{
+  opacity:0.8;
 }
 
-.small{
-  font-size:12px;
-  color:#777;
-  margin-top:10px;
-}
-
-.calendar{
+#calendar{
   display:grid;
   grid-template-columns:repeat(7,1fr);
-  gap:8px;
-  font-size:13px;
-  margin-top:15px;
+  gap:6px;
+  padding:15px;
+  max-width:500px;
+  margin:0 auto;
 }
 
 .day{
-  padding:10px;
-  text-align:center;
-  border-radius:14px;
-  transition:all 0.4s ease;
+  padding:12px 0;
+  background:white;
+  border-radius:8px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.08);
   cursor:pointer;
 }
 
 .day:hover{
-  background:rgba(212,175,55,0.2);
-  transform:scale(1.1);
+  background:#f3e9d7;
 }
 
-.today{
-  background:linear-gradient(135deg,#7a1f1f,#a83232);
-  color:white;
-  box-shadow:0 0 15px rgba(122,31,31,0.5);
+#fortuneResult{
+  margin:25px;
+  font-size:18px;
+  min-height:30px;
 }
-
-button{
-  background:transparent;
-  border:1px solid rgba(122,31,31,0.4);
-  color:#7a1f1f;
-  padding:6px 14px;
-  border-radius:20px;
-  margin:5px;
-  transition:all 0.4s ease;
-}
-
-button:hover{
-  background:#7a1f1f;
-  color:white;
-}
-
-.footer{
-  text-align:center;
-  font-size:11px;
-  color:#aaa;
-  margin-top:30px;
-  letter-spacing:2px;
-}
-
-/* 六曜背景 */
-.bg-taian{background:linear-gradient(180deg,#fffdf5,#f6f1e3);}
-.bg-butsumetsu{background:linear-gradient(180deg,#f8f0f0,#f3dede);}
-.bg-tomobiki{background:linear-gradient(180deg,#f4f8ff,#e2ecff);}
-.bg-senshou{background:linear-gradient(180deg,#fffaf0,#ffe9c7);}
-.bg-senbu{background:linear-gradient(180deg,#f0fff8,#d9f7ea);}
-.bg-shakkou{background:linear-gradient(180deg,#fff5f5,#ffdede);}
 </style>
 </head>
 
-<body class="fade-in">
-<canvas id="particles"></canvas>
+<body>
 
-<div class="container">
-<h1>結 開運暦</h1>
+<h1>結 - 開運暦</h1>
 
-<div class="card center">
-<p id="date"></p>
-<p id="rokuyo"></p>
-<div class="circle" id="direction"></div>
-<p class="small">今日の数秘</p>
-<div class="gold" id="numerology"></div>
-<p class="small" id="message"></p>
+<div class="month-control">
+  <button onclick="changeMonth(-1)">◀</button>
+  <span id="monthLabel"></span>
+  <button onclick="changeMonth(1)">▶</button>
 </div>
 
-<div class="card">
-<div class="center">
-<button onclick="changeMonth(-1)">◀</button>
-<span id="monthLabel"></span>
-<button onclick="changeMonth(1)">▶</button>
-</div>
-<div class="calendar" id="calendar"></div>
-</div>
+<div id="calendar"></div>
 
-<div class="footer">制作：結</div>
-</div>
+<div id="fortuneResult">日付を選んでください</div>
 
 <script>
-let currentMonth=new Date();
-
-function applyRokuyoBackground(rokuyo){
-  const body=document.body;
-  body.classList.remove(
-    "bg-taian","bg-butsumetsu","bg-tomobiki",
-    "bg-senshou","bg-senbu","bg-shakkou"
-  );
-  const map={
-    "大安":"bg-taian",
-    "仏滅":"bg-butsumetsu",
-    "友引":"bg-tomobiki",
-    "先勝":"bg-senshou",
-    "先負":"bg-senbu",
-    "赤口":"bg-shakkou"
-  };
-  if(map[rokuyo]) body.classList.add(map[rokuyo]);
-}
-
-function initToday(){
-  const today=new Date();
-  document.getElementById("date").innerText=
-    today.getFullYear()+"年"+(today.getMonth()+1)+"月"+today.getDate()+"日";
-
-  const rokuyoArr=["大安","友引","先勝","先負","赤口","仏滅"];
-  const todayRokuyo=rokuyoArr[today.getDate()%6];
-  document.getElementById("rokuyo").innerText="六曜："+todayRokuyo;
-  applyRokuyoBackground(todayRokuyo);
-
-  const num=(today.getFullYear()+(today.getMonth()+1)+today.getDate())%9+1;
-  document.getElementById("numerology").innerText=num;
-
-  const directions=["東","西","南","北","北東","南西"];
-  document.getElementById("direction").innerText=
-    "吉方位\n"+directions[today.getDate()%directions.length];
-
-  const messages=[
-    "静かに整える日。",
-    "ご縁が広がる兆し。",
-    "内なる声を聴く日。",
-    "焦らず守る日。",
-    "光が差し込む日。"
-  ];
-  document.getElementById("message").innerText=
-    messages[today.getDate()%messages.length];
-}
+let currentMonth = new Date();
 
 function changeMonth(offset){
   currentMonth.setMonth(currentMonth.getMonth()+offset);
   renderCalendar();
 }
 
-function playBell(){
-  const audio=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-933.mp3");
-  audio.volume=0.4;
-  audio.play();
-}
-
 function showFortune(day){
-  playBell();
   const fortunes=["大吉","中吉","小吉","吉","末吉","凶"];
   const result=fortunes[(day+currentMonth.getMonth())%fortunes.length];
-  alert(currentMonth.getFullYear()+"年"+
-        (currentMonth.getMonth()+1)+"月"+
-        day+"日 の運勢： "+result);
+
+  document.getElementById("fortuneResult").innerText =
+    currentMonth.getFullYear()+"年"+
+    (currentMonth.getMonth()+1)+"月"+
+    day+"日 の運勢： "+result;
 }
 
 function renderCalendar(){
   const year=currentMonth.getFullYear();
   const month=currentMonth.getMonth();
-  document.getElementById("monthLabel").innerText=
+
+  document.getElementById("monthLabel").innerText =
     year+"年"+(month+1)+"月";
 
   const calendar=document.getElementById("calendar");
   calendar.innerHTML="";
+
   const firstDay=new Date(year,month,1).getDay();
   const lastDate=new Date(year,month+1,0).getDate();
-  const today=new Date();
 
+  // 空白セル
   for(let i=0;i<firstDay;i++){
-    calendar.appendChild(document.createElement("div"));
+    const empty=document.createElement("div");
+    calendar.appendChild(empty);
   }
 
+  // 日付セル
   for(let day=1;day<=lastDate;day++){
     const cell=document.createElement("div");
     cell.className="day";
     cell.innerText=day;
-    if(day===today.getDate() &&
-       month===today.getMonth() &&
-       year===today.getFullYear()){
-      cell.classList.add("today");
-    }
-    cell.onclick=function(){showFortune(day);}
+
+    cell.onclick=function(){
+      showFortune(day);
+    };
+
     calendar.appendChild(cell);
   }
 }
 
-initToday();
 renderCalendar();
+</script>
 
-/* 神光粒子 */
-const canvas=document.getElementById("particles");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let particles=[];
-for(let i=0;i<60;i++){
-  particles.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*2+1,
-    d:Math.random()*1
-  });
-}
-
-function drawParticles(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="rgba(212,175,55,0.4)";
+</body>
+</html>
