@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
+body{
+  margin:0;
+  background:#f4efe6;
+}
+
+.page{
+  position:relative;
+  max-width:500px;
+  margin:0 auto;
+}
+
+.bg{
+  width:100%;
+  display:block;
+}
+
+.date{
+  position:absolute;
+  top:120px;   /* ←あとで位置調整する */
+  width:100%;
+  text-align:center;
+  font-size:26px;
+  font-family:"Hiragino Mincho ProN", serif;
+  color:#4a3b2c;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+  <img src="template.png" class="bg">
+  <div class="date" id="date"></div>
+</div>
+
+<script>
+let currentDate = new Date();
+
+function updateDate(){
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth() + 1;
+  const d = currentDate.getDate();
+
+  document.getElementById("date").innerText =
+    y + "年" + m + "月" + d + "日";
+}
+
+updateDate();
+</script>
+
+</body>
+</html>
