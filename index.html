@@ -442,7 +442,8 @@ const compassEl = document.getElementById("needle");
 const luckyDir = getLuckyDirection(today);
 
 if(compassEl){
-  compassEl.style.transform = `rotate(${luckyDir.deg}deg)`;
+  compassEl.style.transform =
+    `translateX(-50%) rotate(${luckyDir.deg}deg)`;
 }
 
 // 表示テキストも更新
