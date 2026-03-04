@@ -8,180 +8,150 @@
 <style>
 body{
   margin:0;
-  font-family:"Hiragino Mincho ProN",serif;
-  background:linear-gradient(to bottom,#f8f3ea,#e7ddcd);
-  color:#3b2f2f;
+  font-family:"Hiragino Mincho ProN", serif;
+  background:#f5f1e8;
+  color:#333;
+  text-align:center;
 }
 
-.header{text-align:center;padding:20px;}
-.logo{font-size:26px;letter-spacing:6px;font-weight:bold;}
-.tagline{font-size:14px;opacity:.7;}
-
-.date{text-align:center;margin-top:10px;}
-.date-main{font-size:34px;font-weight:bold;}
-.week{background:#b30000;color:white;padding:5px 10px;border-radius:20px;margin-left:6px;}
-.rokuyo{margin-top:10px;padding:6px 20px;border-radius:20px;background:#fff8e6;display:inline-block;}
-.taian{color:#b30000;font-weight:bold;}
-
-.moon-box{text-align:center;margin:20px;}
-.moon-circle{
-  width:100px;height:100px;margin:0 auto 10px;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,#fff,#d4af37);
-  box-shadow:0 0 15px rgba(212,175,55,.6);
+header{
+  padding:20px 0 10px;
+  font-size:20px;
+  letter-spacing:3px;
 }
 
-.calendar{
-  margin:20px;
-  padding:15px;
-  background:white;
-  border-radius:20px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
+.calendar-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 20px;
+  margin-bottom:10px;
 }
 
-.calendar-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
-  margin-top:10px;
-}
-
-.day{
-  padding:8px 0;
-  border-radius:10px;
-  font-size:13px;
+button{
+  background:none;
+  border:none;
+  font-size:20px;
   cursor:pointer;
 }
 
-.today{
-  background:#111;
-  color:white;
+#monthTitle{
+  font-size:18px;
 }
 
-.manbai{
-  background:#f8d7da;
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+  padding:0 10px 30px;
 }
 
-.hasEvent{
-  background:#ffe4b5;
-  border:1px solid #d4af37;
-}
-
-.nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
+.day{
   background:white;
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-  box-shadow:0 -5px 15px rgba(0,0,0,.1);
-  font-size:12px;
+  padding:12px 0;
+  border-radius:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+  font-size:14px;
+  min-height:60px;
 }
-.nav div{text-align:center;}
+
+.today{
+  border:2px solid #b22222;
+}
+
+.week{
+  font-size:12px;
+  opacity:0.6;
+  padding-bottom:5px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-<div class="logo">結 開運暦</div>
-<div class="tagline">— 毎日に、神さまの流れを —</div>
+<header>結 - 開運暦</header>
+
+<div class="calendar-header">
+  <button onclick="changeMonth(-1)">‹</button>
+  <div id="monthTitle"></div>
+  <button onclick="changeMonth(1)">›</button>
 </div>
 
-<div class="date">
-<div id="dateMain" class="date-main"></div>
-<div id="week" class="week"></div><br>
-<div id="rokuyo" class="rokuyo"></div>
-</div>
-
-<div class="moon-box">
-<div class="moon-circle"></div>
-<div id="moonText"></div>
-</div>
-
-<div class="calendar">
-<h3>📅 今月のカレンダー（タップで予定入力）</h3>
-<div id="calendar" class="calendar-grid"></div>
-</div>
-
-<div class="nav">
-<div>🏠<br>ホーム</div>
-<div>📅<br>カレンダー</div>
-<div>🧭<br>吉方位</div>
-<div>🔢<br>数秘</div>
-<div>✉️<br>メッセージ</div>
-</div>
+<div class="calendar" id="calendar"></div>
 
 <script>
-const today=new Date();
-const yyyy=today.getFullYear();
-const mm=today.getMonth();
-const dd=today.getDate();
-const weekList=["日","月","火","水","木","金","土"];
+let currentDate = new Date();
+let touchStartX = 0;
+let touchEndX = 0;
 
-document.getElementById("dateMain").innerText=
-`${yyyy}年${mm+1}月${dd}日`;
-document.getElementById("week").innerText=
-weekList[today.getDay()];
+function renderCalendar(){
+  const calendar = document.getElementById("calendar");
+  calendar.innerHTML = "";
 
-// 六曜
-const rokuyoList=["先勝","友引","先負","仏滅","大安","赤口"];
-const base=new Date(2025,0,1);
-const diff=Math.floor((today-base)/(1000*60*60*24));
-const r=rokuyoList[(diff%6+6)%6];
-document.getElementById("rokuyo").innerText="六曜："+r;
-if(r==="大安") document.getElementById("rokuyo").classList.add("taian");
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
-// 月齢
-const moonBase=new Date(2025,0,29);
-const moonAge=((today-moonBase)/(1000*60*60*24))%29.53;
-document.getElementById("moonText").innerText="月齢 "+moonAge.toFixed(1);
+  document.getElementById("monthTitle").innerText =
+    year + "年 " + (month+1) + "月";
 
-// 一粒万倍日（簡易9日周期）
-function isManbai(d){return d%9===0;}
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month+1, 0).getDate();
+  const today = new Date();
 
-function generateCalendar(){
-  const cal=document.getElementById("calendar");
-  cal.innerHTML="";
-  const first=new Date(yyyy,mm,1).getDay();
-  const last=new Date(yyyy,mm+1,0).getDate();
-
-  for(let i=0;i<first;i++) cal.innerHTML+="<div></div>";
-
-  for(let d=1;d<=last;d++){
-    let cls="day";
-    if(d===dd) cls+=" today";
-    if(isManbai(d)) cls+=" manbai";
-
-    const key=`${yyyy}-${mm+1}-${d}`;
-    const saved=localStorage.getItem(key);
-    if(saved) cls+=" hasEvent";
-
-    cal.innerHTML+=`
-      <div class="${cls}" onclick="openMemo(${d})">
-        ${d}
-      </div>`;
-  }
-}
-generateCalendar();
-
-// 予定入力
-function openMemo(day){
-  const key=`${yyyy}-${mm+1}-${day}`;
-  const existing=localStorage.getItem(key) || "";
-  const text=prompt(`${day}日の予定を入力`, existing);
-
-  if(text===null) return;
-
-  if(text===""){
-    localStorage.removeItem(key);
-  }else{
-    localStorage.setItem(key,text);
+  const weekDays = ["日","月","火","水","木","金","土"];
+  for(let i=0;i<7;i++){
+    const w = document.createElement("div");
+    w.className = "week";
+    w.innerText = weekDays[i];
+    calendar.appendChild(w);
   }
 
-  generateCalendar();
+  for(let i=0;i<firstDay;i++){
+    const empty = document.createElement("div");
+    calendar.appendChild(empty);
+  }
+
+  for(let day=1;day<=lastDate;day++){
+    const cell = document.createElement("div");
+    cell.className = "day";
+    cell.innerText = day;
+
+    if(
+      day === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear()
+    ){
+      cell.classList.add("today");
+    }
+
+    calendar.appendChild(cell);
+  }
 }
+
+function changeMonth(num){
+  currentDate.setMonth(currentDate.getMonth() + num);
+  renderCalendar();
+}
+
+document.addEventListener("touchstart", e=>{
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener("touchend", e=>{
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+});
+
+function handleSwipe(){
+  if(touchEndX < touchStartX - 50){
+    changeMonth(1);
+  }
+  if(touchEndX > touchStartX + 50){
+    changeMonth(-1);
+  }
+}
+
+renderCalendar();
 </script>
 
 </body>
