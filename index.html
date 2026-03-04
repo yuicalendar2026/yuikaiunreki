@@ -118,44 +118,64 @@ h1{
   display:inline-block;
   transition: transform 1s ease;
 }
-  #compassWrap{
-  margin:20px 0;
+#compassWrap{
   display:flex;
   justify-content:center;
+  margin:20px 0;
 }
 
 #compassCircle{
-  width:150px;
-  height:150px;
+  width:200px;
+  height:200px;
   border-radius:50%;
-  border:4px solid #333;
   position:relative;
   background:
-    radial-gradient(circle at center, #ffffff 55%, #ececec 100%);
-  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+    radial-gradient(circle at 30% 30%, #ffffff 0%, #f1f1f1 40%, #dcdcdc 100%);
+  border:6px solid #333;
+  box-shadow:
+    inset 0 0 15px rgba(0,0,0,0.2),
+    0 10px 25px rgba(0,0,0,0.25);
 }
+
+/* 方位文字 */
+.direction{
+  position:absolute;
+  font-weight:bold;
+  font-size:18px;
+  color:#333;
+}
+
+.north{ top:10px; left:50%; transform:translateX(-50%); }
+.south{ bottom:10px; left:50%; transform:translateX(-50%); }
+.east{ right:10px; top:50%; transform:translateY(-50%); }
+.west{ left:10px; top:50%; transform:translateY(-50%); }
+
+/* 針 */
+#needle{
+  width:4px;
+  height:85px;
+  background:linear-gradient(to top, #b22222, #ff4444);
+  position:absolute;
+  bottom:50%;
+  left:50%;
+  transform-origin:bottom center;
+  transform:translateX(-50%) rotate(0deg);
+  border-radius:3px;
+  transition:transform 1s ease;
+  box-shadow:0 0 8px rgba(178,34,34,0.6);
+}
+
+/* 中心 */
 #centerDot{
-  width:10px;
-  height:10px;
+  width:14px;
+  height:14px;
   background:#333;
   border-radius:50%;
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-}
-  
-#needle{
-  width:3px;
-  height:65px;
-  background:#b22222;
-  position:absolute;
-  bottom:50%;
-  left:50%;
-  transform-origin:bottom center;
-  transform:translateX(-50%) rotate(0deg);
-  border-radius:2px;
-  transition:transform 1s ease;
+  box-shadow:0 0 6px rgba(0,0,0,0.4);
 }
 </style>
 </head>
