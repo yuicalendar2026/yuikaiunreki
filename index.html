@@ -168,6 +168,8 @@ function calculateRokuyo(date){
 // 六曜表示
 document.getElementById("rokuyo").innerText =
   `六曜：${calculateRokuyo(today)}`;
+  document.getElementById("lunar").innerText =
+  `旧暦 ${getOldLunarMonth(today)}月${getOldLunarDay(today)}日`;
 </script>
 
 </body>
