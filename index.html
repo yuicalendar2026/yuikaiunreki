@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>結 - 開運暦</title>
 
-<!-- ホーム画面追加用 -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#f5f1e8">
-
 <style>
 body{
   margin:0;
@@ -30,114 +26,28 @@ h1{
   letter-spacing:2px;
 }
 
-.date{
-  font-size:22px;
-  margin:20px 0 5px;
-}
+/* ===== コンパス ===== */
 
-.section{
-  margin:30px 0;
-  padding:20px;
-  background:white;
-  border-radius:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
-}
-
-.small{
-  font-size:14px;
-  opacity:0.7;
-}
-
-.highlight{
-  color:#b22222;
-  font-weight:bold;
-}
-
-.scroll-area{
-  margin-top:40px;
-  padding:30px 20px;
-  background:#fff;
-  border-radius:20px 20px 0 0;
-}
-
-.month-list{
-  display:flex;
-  overflow-x:auto;
-  gap:15px;
-  padding:10px 0;
-}
-
-.day-card{
-  min-width:80px;
-  padding:15px;
-  background:#f0ede6;
-  border-radius:12px;
-  font-size:14px;
-}
-
-.footer{
-  margin:40px 0 20px;
-  font-size:12px;
-  opacity:0.6;
-}
-  
-#splash {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, #111 0%, #000 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  animation: fadeOut 1.8s ease 1.8s forwards;
-}
-
-.splash-text {
-  color: white;
-  font-size: 28px;
-  letter-spacing: 4px;
-  animation: fadeIn 1.5s ease forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
-}
-
-
-#compassWrap{
-  margin:20px 0;
-}
-
-#compass{
-  font-size:60px;
-  display:inline-block;
-  transition: transform 1s ease;
-}
 #compassWrap{
   display:flex;
   justify-content:center;
-  margin:20px 0;
+  margin:40px 0;
 }
 
 #compassCircle{
-  width:200px;
-  height:200px;
+  width:220px;
+  height:220px;
   border-radius:50%;
   position:relative;
   background:
     radial-gradient(circle at 30% 30%, #ffffff 0%, #f1f1f1 40%, #dcdcdc 100%);
   border:6px solid #333;
   box-shadow:
-    inset 0 0 15px rgba(0,0,0,0.2),
-    0 10px 25px rgba(0,0,0,0.25);
+    inset 0 0 20px rgba(0,0,0,0.2),
+    0 12px 30px rgba(0,0,0,0.25);
 }
 
-/* 方位文字 */
+/* 方位 */
 .direction{
   position:absolute;
   font-weight:bold;
@@ -145,16 +55,16 @@ h1{
   color:#333;
 }
 
-.north{ top:10px; left:50%; transform:translateX(-50%); }
-.south{ bottom:10px; left:50%; transform:translateX(-50%); }
-.east{ right:10px; top:50%; transform:translateY(-50%); }
-.west{ left:10px; top:50%; transform:translateY(-50%); }
+.north{ top:12px; left:50%; transform:translateX(-50%); }
+.south{ bottom:12px; left:50%; transform:translateX(-50%); }
+.east{ right:12px; top:50%; transform:translateY(-50%); }
+.west{ left:12px; top:50%; transform:translateY(-50%); }
 
 /* 針 */
 #needle{
   width:4px;
-  height:85px;
-  background:linear-gradient(to top, #b22222, #ff4444);
+  height:95px;
+  background:linear-gradient(to top, #8b0000, #ff4444);
   position:absolute;
   bottom:50%;
   left:50%;
@@ -162,78 +72,36 @@ h1{
   transform:translateX(-50%) rotate(0deg);
   border-radius:3px;
   transition:transform 1s ease;
-  box-shadow:0 0 8px rgba(178,34,34,0.6);
+  box-shadow:0 0 12px rgba(178,34,34,0.6);
 }
 
 /* 中心 */
 #centerDot{
-  width:14px;
-  height:14px;
-  background:#333;
+  width:16px;
+  height:16px;
+  background:#222;
   border-radius:50%;
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  box-shadow:0 0 6px rgba(0,0,0,0.4);
+}
+
+/* 表示テキスト */
+.direction-text{
+  font-size:20px;
+  margin-top:15px;
+  font-weight:bold;
 }
 </style>
 </head>
+
 <body>
-
-<div id="splash">
-  <div class="splash-text">結 - 開運暦</div>
-</div>
-
 
 <div class="container">
 
 <h1>結 - 開運暦</h1>
 
-<div class="date" id="date"></div>
-<div id="rokuyo"></div>
-
-<div class="section">
-  <div>🔮 吉方位</div>
-  <div id="compassWrap">
-  <div id="compassCircle">
-    <div id="needle"></div>
-  </div>
-  </div>
-  <div class="small">南東（サンプル）</div>
-</div>
-
-<div class="section">
-  <div>🔢 今日の数秘</div>
-  <div id="numerology" style="font-size:28px;margin-top:10px;"></div>
-</div>
-
-<div class="section">
-  <div>🌟 本日の吉日情報</div>
-  <div id="goodday" class="highlight" style="margin-top:10px;"></div>
-</div>
-
-<div class="section">
-  <div>🌑 月情報</div>
-  <div id="moon"></div>
-  <div id="lunar" class="small"></div>
-</div>
-
-<div class="scroll-area">
-  <h3>今月の吉日一覧</h3>
-  <div class="month-list" id="monthList"></div>
-
-  <h3 style="margin-top:30px;">二十四節気（簡易表示）</h3>
-
-<div id="season"></div>
-
-  <h3 style="margin-top:30px;">新月・満月</h3>
-  <div id="lunation"></div>
-</div>
-
-<div class="footer">
-  静かに、凛として。
-</div>
 <div id="compassWrap">
   <div id="compassCircle">
     <div class="direction north">N</div>
@@ -245,244 +113,47 @@ h1{
     <div id="centerDot"></div>
   </div>
 </div>
+
+<div class="direction-text" id="directionText"></div>
+
 </div>
+
 <script>
-// 今日の日付
-const today = new Date();
-
-// ===== 旧暦計算 =====
-const knownNewMoon = new Date("2000-01-06T18:14:00Z");
-const synodicMonth = 29.53058867;
-
-function getMoonAge(date){
-  const days = (date - knownNewMoon) / 86400000;
-  return (days % synodicMonth + synodicMonth) % synodicMonth;
-}
-
-function getOldLunarDay(date){
-  return Math.floor(getMoonAge(date)) + 1;
-}
-
-function getOldLunarMonth(date){
-  const daysSince = (date - knownNewMoon) / 86400000;
-  const monthCount = Math.floor(daysSince / synodicMonth);
-  return (monthCount % 12 + 12) % 12 + 1;
-}
-
-// ===== 六曜 =====
-const rokuyoNames = ["先勝","友引","先負","仏滅","大安","赤口"];
-
-function calculateRokuyo(date){
-  const oldMonth = getOldLunarMonth(date);
-  const oldDay = getOldLunarDay(date);
-  return rokuyoNames[(oldMonth + oldDay) % 6];
-}
-
-// ===== 日付表示 =====
-const year = today.getFullYear();
-const month = today.getMonth() + 1;
-const day = today.getDate();
-
-const dateEl = document.getElementById("date");
-if(dateEl){
-  dateEl.innerText = `${year}年 ${month}月 ${day}日`;
-}
-
-// ===== 六曜表示 =====
-const rokuyoEl = document.getElementById("rokuyo");
-if(rokuyoEl){
-  rokuyoEl.innerText = `六曜：${calculateRokuyo(today)}`;
-}
-
-// ===== 月齢ビジュアル =====
-function getMoonPhaseIcon(age){
-  if(age < 1) return "🌑 新月";
-  if(age < 7) return "🌒 上弦前";
-  if(age < 8) return "🌓 上弦";
-  if(age < 14) return "🌔 満月前";
-  if(age < 16) return "🌕 満月";
-  if(age < 22) return "🌖 下弦前";
-  if(age < 23) return "🌗 下弦";
-  return "🌘 新月前";
-}
-
-const moonAge = getMoonAge(today);
-
-const moonEl = document.getElementById("moon");
-if(moonEl){
-  moonEl.innerText =
-    `${getMoonPhaseIcon(moonAge)}（月齢 ${moonAge.toFixed(1)}）`;
-}
-
-// ===== 旧暦表示（安全設計） =====
-const lunarEl = document.getElementById("lunar");
-if(lunarEl){
-  lunarEl.innerText =
-    `旧暦 ${getOldLunarMonth(today)}月${getOldLunarDay(today)}日`;
-}
-
-// ===== 二十四節気（近似） =====
-function getSekki(date){
-  const year = date.getFullYear();
-
-  const sekkiDates = [
-    { name:"小寒", month:1, day:6 },
-    { name:"大寒", month:1, day:20 },
-    { name:"立春", month:2, day:4 },
-    { name:"雨水", month:2, day:19 },
-    { name:"啓蟄", month:3, day:5 },
-    { name:"春分", month:3, day:20 },
-    { name:"清明", month:4, day:5 },
-    { name:"穀雨", month:4, day:20 },
-    { name:"立夏", month:5, day:5 },
-    { name:"小満", month:5, day:21 },
-    { name:"芒種", month:6, day:6 },
-    { name:"夏至", month:6, day:21 },
-    { name:"小暑", month:7, day:7 },
-    { name:"大暑", month:7, day:23 },
-    { name:"立秋", month:8, day:7 },
-    { name:"処暑", month:8, day:23 },
-    { name:"白露", month:9, day:7 },
-    { name:"秋分", month:9, day:23 },
-    { name:"寒露", month:10, day:8 },
-    { name:"霜降", month:10, day:23 },
-    { name:"立冬", month:11, day:7 },
-    { name:"小雪", month:11, day:22 },
-    { name:"大雪", month:12, day:7 },
-    { name:"冬至", month:12, day:22 }
-  ];
-
-  let latest = sekkiDates[0].name;
-
-  for(let s of sekkiDates){
-    const d = new Date(year, s.month-1, s.day);
-    if(date >= d){
-      latest = s.name;
-    }
-  }
-
-  return latest;
-}
-
-const seasonEl = document.getElementById("season");
-if(seasonEl){
-  seasonEl.innerText =
-    `現在の節気：${getSekki(today)}`;
-}
-// ===== 吉日判定（簡易版サンプル） =====
-function getGoodDayText(date){
-  const d = date.getDate();
-  let result = [];
-
-  // 仮ルール（例）
-  if(d % 7 === 0) result.push("一粒万倍日");
-  if(d === 1) result.push("天赦日");
-  if(d % 9 === 0) result.push("大安吉日");
-
-  if(result.length === 0){
-    return "特別な吉日はありません";
-  }
-
-  return result.join("・");
-}
-
-const gooddayEl = document.getElementById("goodday");
-if(gooddayEl){
-  gooddayEl.innerText = getGoodDayText(today);
-}
-
-// ===== 今月の吉日一覧生成 =====
-const monthListEl = document.getElementById("monthList");
-if(monthListEl){
-  const daysInMonth = new Date(year, month, 0).getDate();
-
-  for(let i=1;i<=daysInMonth;i++){
-    const d = new Date(year, month-1, i);
-    const text = getGoodDayText(d);
-
-    if(text !== "特別な吉日はありません"){
-      const card = document.createElement("div");
-      card.className = "day-card highlight";
-      card.innerText = `${i}日\n${text}`;
-      monthListEl.appendChild(card);
-    }
-  }
-}
-
-// ===== 新月・満月表示 =====
-const lunationEl = document.getElementById("lunation");
-if(lunationEl){
-  if(moonAge < 1){
-    lunationEl.innerText = "本日は新月です 🌑";
-  } else if(moonAge > 14 && moonAge < 16){
-    lunationEl.innerText = "本日は満月です 🌕";
-  } else {
-    lunationEl.innerText = "次の大きな月相をお待ちください";
-  }
-}
-  // ===== 方位自動回転 =====
+// ===== 吉方位ロジック =====
 function getLuckyDirection(date){
-  const d = date.getDate();
-
   const directions = [
-    { name: "北", deg: 0 },
-    { name: "北東", deg: 45 },
-    { name: "東", deg: 90 },
-    { name: "南東", deg: 135 },
-    { name: "南", deg: 180 },
-    { name: "南西", deg: 225 },
-    { name: "西", deg: 270 },
-    { name: "北西", deg: 315 }
+    { name:"北", deg:0 },
+    { name:"北東", deg:45 },
+    { name:"東", deg:90 },
+    { name:"南東", deg:135 },
+    { name:"南", deg:180 },
+    { name:"南西", deg:225 },
+    { name:"西", deg:270 },
+    { name:"北西", deg:315 }
   ];
 
-  return directions[d % 8];
+  return directions[date.getDate() % 8];
 }
 
-const compassEl = document.getElementById("needle");
-const luckyDir = getLuckyDirection(today);
+// ===== 実行 =====
+window.onload = function(){
 
-if(compassEl){
-  compassEl.style.transform =
-    `translateX(-50%) rotate(${luckyDir.deg}deg)`;
-}
-
-// 表示テキストも更新
-const directionText = document.querySelector(".section .small");
-if(directionText){
-  directionText.innerText = luckyDir.name;
-}
-</script>
-<script>
-function rotateCompass(degree){
-  const needle = document.getElementById("needle");
-  needle.style.transform =
-    "translateX(-50%) rotate(" + degree + "deg)";
-}
-
-/* テスト用：3秒後に南へ回す */
-setTimeout(() => {
-  rotateCompass(180);
-}, 1000);
-</script>
-  <script>
-document.addEventListener("DOMContentLoaded", function(){
+  const today = new Date();
+  const lucky = getLuckyDirection(today);
 
   const needle = document.getElementById("needle");
+  const text = document.getElementById("directionText");
 
-  if(!needle){
-    console.log("needleが見つかりません");
-    return;
+  if(needle){
+    needle.style.transform =
+      "translateX(-50%) rotate(" + lucky.deg + "deg)";
   }
 
-  // 今日の日付で自動計算（超シンプル版）
-  const today = new Date();
-  const directions = [0, 90, 180, 270]; 
-  const deg = directions[today.getDate() % 4];
-
-  needle.style.transform =
-    "translateX(-50%) rotate(" + deg + "deg)";
-
-});
+  if(text){
+    text.innerText = "本日の吉方位： " + lucky.name;
+  }
+};
 </script>
+
 </body>
 </html>
