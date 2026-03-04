@@ -162,15 +162,16 @@ function numerologyCalc(y,m,d){
 document.getElementById("numerology").innerText =
 numerologyCalc(year,month,day);
 
-// 月齢（簡易）
-function moonPhase(date){
-  const lp = 2551443;
-  const new_moon = new Date(1970,0,7,20,35,0);
-  const phase = ((date.getTime() - new_moon.getTime())/1000) % lp;
-  return Math.floor(phase/(24*3600));
+// 月齢（高精度近似）
+function preciseMoonAge(date){
+  const synodicMonth = 29.53058867;
+  const knownNewMoon = new Date("2000-01-06T18:14:00Z");
+  const days = (date - knownNewMoon) / 86400000;
+  return (days % synodicMonth + synodicMonth) % synodicMonth;
 }
+
 document.getElementById("moon").innerText =
-`月齢 ${moonPhase(today)}`;
+`月齢 ${preciseMoonAge(today).toFixed(1)}`;
 
 // 吉日サンプル
 const goodSample = ["天赦日","一粒万倍日","大安"];
