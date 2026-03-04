@@ -451,6 +451,17 @@ if(directionText){
   directionText.innerText = luckyDir.name;
 }
 </script>
+<script>
+function rotateCompass(degree){
+  const needle = document.getElementById("needle");
+  needle.style.transform =
+    "translateX(-50%) rotate(" + degree + "deg)";
+}
 
+/* テスト用：3秒後に南へ回す */
+setTimeout(() => {
+  rotateCompass(180);
+}, 1000);
+</script>
 </body>
 </html>
