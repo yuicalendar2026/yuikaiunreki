@@ -118,6 +118,32 @@ h1{
   display:inline-block;
   transition: transform 1s ease;
 }
+  #compassWrap{
+  margin:20px 0;
+  display:flex;
+  justify-content:center;
+}
+
+#compassCircle{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  border:3px solid #333;
+  position:relative;
+  background:radial-gradient(circle,#fff 60%,#eee 100%);
+}
+
+#needle{
+  width:2px;
+  height:60px;
+  background:#b22222;
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform-origin:bottom center;
+  transform:translateX(-50%) rotate(0deg);
+  transition:transform 1s ease;
+}
 </style>
 </head>
 <body>
