@@ -48,11 +48,14 @@ button{
 
 .day{
   background:white;
-  padding:12px 0;
+  padding:6px 2px;
   border-radius:12px;
   box-shadow:0 2px 6px rgba(0,0,0,0.05);
-  font-size:14px;
-  min-height:60px;
+  font-size:13px;
+  min-height:75px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 .today{
@@ -63,6 +66,25 @@ button{
   font-size:12px;
   opacity:0.6;
   padding-bottom:5px;
+}
+
+.rokuyo{
+  font-size:10px;
+  margin-top:2px;
+}
+
+.moon{
+  font-size:14px;
+}
+
+.fullmoon{
+  background:#fff4c2;
+  border:2px solid gold;
+}
+
+.newmoon{
+  background:#222;
+  color:white;
 }
 </style>
 </head>
@@ -83,6 +105,28 @@ button{
 let currentDate = new Date();
 let touchStartX = 0;
 let touchEndX = 0;
+
+const rokuyoList = ["先勝","友引","先負","仏滅","大安","赤口"];
+
+function getRokuyo(year,month,day){
+  return rokuyoList[(year + month + day) % 6];
+}
+
+function getMoonAge(date){
+  const base = new Date(2000,0,6,18,14);
+  const diff = date - base;
+  const days = diff / (1000*60*60*24);
+  return (days % 29.53);
+}
+
+function getMoonIcon(age){
+  if(age < 1) return "🌑";
+  if(age < 7) return "🌒";
+  if(age < 14) return "🌓";
+  if(age < 15) return "🌕";
+  if(age < 22) return "🌖";
+  return "🌘";
+}
 
 function renderCalendar(){
   const calendar = document.getElementById("calendar");
@@ -107,14 +151,22 @@ function renderCalendar(){
   }
 
   for(let i=0;i<firstDay;i++){
-    const empty = document.createElement("div");
-    calendar.appendChild(empty);
+    calendar.appendChild(document.createElement("div"));
   }
 
   for(let day=1;day<=lastDate;day++){
     const cell = document.createElement("div");
     cell.className = "day";
-    cell.innerText = day;
+
+    const dateObj = new Date(year,month,day);
+    const moonAge = getMoonAge(dateObj);
+    const moonIcon = getMoonIcon(moonAge);
+
+    cell.innerHTML = `
+      <div>${day}</div>
+      <div class="moon">${moonIcon}</div>
+      <div class="rokuyo">${getRokuyo(year,month+1,day)}</div>
+    `;
 
     if(
       day === today.getDate() &&
@@ -122,6 +174,13 @@ function renderCalendar(){
       year === today.getFullYear()
     ){
       cell.classList.add("today");
+    }
+
+    if(moonAge < 1){
+      cell.classList.add("newmoon");
+    }
+    if(moonAge > 14 && moonAge < 15){
+      cell.classList.add("fullmoon");
     }
 
     calendar.appendChild(cell);
