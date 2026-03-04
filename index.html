@@ -167,6 +167,14 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
     .then(() => console.log("Service Worker Registered"));
 }
+  /* ===== 強制カレンダー初期化 ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof renderCalendar === "function") {
+    renderCalendar();
+  } else {
+    console.log("renderCalendar が存在しない");
+  }
+});
 </script>
 </body>
 </html>
