@@ -176,6 +176,22 @@ const day = today.getDate();
 
 document.getElementById("date").innerText =
   `${year}年 ${month}月 ${day}日`;
+// ===== 月齢ビジュアル化 =====
+function getMoonPhaseIcon(age){
+  if(age < 1) return "🌑 新月";
+  if(age < 7) return "🌒 上弦前";
+  if(age < 8) return "🌓 上弦";
+  if(age < 14) return "🌔 満月前";
+  if(age < 16) return "🌕 満月";
+  if(age < 22) return "🌖 下弦前";
+  if(age < 23) return "🌗 下弦";
+  return "🌘 新月前";
+}
+
+const moonAge = getMoonAge(today);
+
+document.getElementById("moon").innerText =
+  `${getMoonPhaseIcon(moonAge)}（月齢 ${moonAge.toFixed(1)}）`;
 </script>
 
 </body>
