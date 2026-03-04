@@ -8,8 +8,8 @@
 <style>
 body{
   margin:0;
-  font-family: "Hiragino Mincho ProN", serif;
-  background: linear-gradient(to bottom,#f5f1e8,#e8dfcf);
+  font-family:"Hiragino Mincho ProN",serif;
+  background:linear-gradient(to bottom,#f5f1e8,#e8dfcf);
   text-align:center;
   color:#222;
 }
@@ -24,15 +24,15 @@ h1{
   background:white;
   margin:20px auto;
   padding:20px;
-  width:90%;
+  width:92%;
   max-width:420px;
   border-radius:20px;
   box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
 .big{
-  font-size:22px;
-  margin:10px 0;
+  font-size:20px;
+  margin:8px 0;
 }
 
 .highlight{
@@ -40,13 +40,14 @@ h1{
   font-weight:bold;
 }
 
+/* ===== コンパス ===== */
 #compassCircle{
   width:180px;
   height:180px;
   border-radius:50%;
   margin:30px auto;
   position:relative;
-  background: radial-gradient(circle,#fff 55%,#ddd 100%);
+  background:radial-gradient(circle,#fff 55%,#ddd 100%);
   border:6px solid #c9a646;
   box-shadow:0 8px 20px rgba(0,0,0,0.2);
 }
@@ -86,8 +87,38 @@ button{
   margin-top:15px;
 }
 
-button:hover{
-  opacity:0.8;
+button:hover{ opacity:0.85; }
+
+/* ===== カレンダー ===== */
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  margin-top:10px;
+}
+
+.day{
+  padding:8px 0;
+  border-radius:12px;
+  font-size:14px;
+}
+
+.today{
+  background:#111;
+  color:white;
+}
+
+.tensha{
+  background:#c9a646;
+  color:white;
+}
+
+.taian{
+  background:#f8d7da;
+}
+
+.fullmoon{
+  box-shadow:0 0 10px #ffcc00;
 }
 
 footer{
@@ -116,36 +147,38 @@ footer{
 
 <button onclick="spinCompass()">運命を回す</button>
 
+<!-- 👇 カレンダーここ -->
 <div class="card">
-  <h3>📅 今月の天赦日</h3>
+  <h3>📅 今月のカレンダー</h3>
+  <div id="calendar" class="calendar-grid"></div>
+</div>
+
+<div class="card">
+  <h3>👑 今月の天赦日</h3>
   <div id="monthlyLucky"></div>
 </div>
 
-<footer>
-© 結 - 開運暦
-</footer>
+<footer>© 結 - 開運暦</footer>
 
 <script>
-// ===== 今日の日付 =====
-const today = new Date();
-const yyyy = today.getFullYear();
-const mm = String(today.getMonth()+1).padStart(2,'0');
-const dd = String(today.getDate()).padStart(2,'0');
-const todayStr = `${yyyy}-${mm}-${dd}`;
+// ===== 日付取得 =====
+const today=new Date();
+const yyyy=today.getFullYear();
+const mm=String(today.getMonth()+1).padStart(2,'0');
+const dd=String(today.getDate()).padStart(2,'0');
+const todayStr=`${yyyy}-${mm}-${dd}`;
 
-document.getElementById("todayDate").innerText =
+document.getElementById("todayDate").innerText=
 `${yyyy}年 ${mm}月 ${dd}日`;
-
 
 // ===== 六曜 =====
 const rokuyoList=["先勝","友引","先負","仏滅","大安","赤口"];
 const base=new Date(2025,0,1);
 const diff=Math.floor((today-base)/(1000*60*60*24));
-const rokuyo=rokuyoList[(diff%6+6)%6];
-document.getElementById("rokuyo").innerText="六曜："+rokuyo;
+const todayRokuyo=rokuyoList[(diff%6+6)%6];
+document.getElementById("rokuyo").innerText="六曜："+todayRokuyo;
 
-
-// ===== 天赦日データ（5年分）=====
+// ===== 天赦日データ =====
 const tenshaDays=[
 "2026-01-06","2026-03-21","2026-06-05","2026-08-07","2026-10-06","2026-12-21",
 "2027-01-05","2027-03-20","2027-06-04","2027-08-07","2027-10-05","2027-12-20",
@@ -154,20 +187,13 @@ const tenshaDays=[
 "2030-01-03","2030-03-18","2030-06-01","2030-08-05","2030-10-02","2030-12-17"
 ];
 
-
 // ===== 吉日判定 =====
 let luckyText="通常日";
-
-if(rokuyo==="大安"){
-  luckyText="🌸 大安吉日";
-}
-
+if(todayRokuyo==="大安"){ luckyText="🌸 大安吉日"; }
 if(tenshaDays.includes(todayStr)){
   luckyText="👑✨ 天赦日（最強開運日）✨";
 }
-
 document.getElementById("luckyDay").innerText=luckyText;
-
 
 // ===== 月齢 =====
 function getMoonAge(date){
@@ -175,20 +201,12 @@ function getMoonAge(date){
   const diff=(date-base)/(1000*60*60*24);
   return (diff%29.53+29.53)%29.53;
 }
-
 const moonAge=getMoonAge(today);
 let moonText="";
-
-if(moonAge<1){
-  moonText="🌑 新月";
-}else if(Math.abs(moonAge-14.7)<1){
-  moonText="🌕 満月";
-}else{
-  moonText="🌙 月齢 "+moonAge.toFixed(1);
-}
-
+if(moonAge<1){ moonText="🌑 新月"; }
+else if(Math.abs(moonAge-14.7)<1){ moonText="🌕 満月"; }
+else{ moonText="🌙 月齢 "+moonAge.toFixed(1); }
 document.getElementById("moon").innerText=moonText;
-
 
 // ===== コンパス =====
 let angle=0;
@@ -196,25 +214,48 @@ function spinCompass(){
   const needle=document.getElementById("needle");
   angle+=720+Math.random()*360;
   needle.style.transform=
-    `translate(-50%,-100%) rotate(${angle}deg)`;
+  `translate(-50%,-100%) rotate(${angle}deg)`;
 }
 
+// ===== カレンダー生成 =====
+function generateCalendar(){
+  const cal=document.getElementById("calendar");
+  cal.innerHTML="";
 
-// ===== 今月の天赦日 =====
+  const firstDay=new Date(yyyy,today.getMonth(),1).getDay();
+  const lastDate=new Date(yyyy,today.getMonth()+1,0).getDate();
+
+  for(let i=0;i<firstDay;i++){
+    cal.innerHTML+="<div></div>";
+  }
+
+  for(let d=1; d<=lastDate; d++){
+    const dateStr=`${yyyy}-${mm}-${String(d).padStart(2,'0')}`;
+    const dateObj=new Date(yyyy,today.getMonth(),d);
+    const dayDiff=Math.floor((dateObj-base)/(1000*60*60*24));
+    const r=rokuyoList[(dayDiff%6+6)%6];
+
+    let cls="day";
+    if(d==dd){ cls+=" today"; }
+    if(tenshaDays.includes(dateStr)){ cls+=" tensha"; }
+    if(r==="大安"){ cls+=" taian"; }
+
+    cal.innerHTML+=`<div class="${cls}">${d}</div>`;
+  }
+}
+generateCalendar();
+
+// ===== 今月天赦日一覧 =====
 function showMonthlyTensha(){
   const list=document.getElementById("monthlyLucky");
-  list.innerHTML="";う
+  list.innerHTML="";
   const thisMonth=yyyy+"-"+mm;
-
   tenshaDays.forEach(day=>{
     if(day.startsWith(thisMonth)){
-      const div=document.createElement("div");
-      div.innerText="👑 "+day;
-      list.appendChild(div);
+      list.innerHTML+="👑 "+day+"<br>";
     }
   });
 }
-
 showMonthlyTensha();
 </script>
 
