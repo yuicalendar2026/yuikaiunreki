@@ -198,6 +198,8 @@ function getSekki(date){
   const year = date.getFullYear();
 
   const sekkiDates = [
+    { name:"小寒", month:1, day:6 },
+    { name:"大寒", month:1, day:20 },
     { name:"立春", month:2, day:4 },
     { name:"雨水", month:2, day:19 },
     { name:"啓蟄", month:3, day:5 },
@@ -219,14 +221,13 @@ function getSekki(date){
     { name:"立冬", month:11, day:7 },
     { name:"小雪", month:11, day:22 },
     { name:"大雪", month:12, day:7 },
-    { name:"冬至", month:12, day:22 },
-    { name:"小寒", month:1, day:6 },
-    { name:"大寒", month:1, day:20 }
+    { name:"冬至", month:12, day:22 }
   ];
 
-  let latest = "";
+  let latest = sekkiDates[0].name;
 
-  for(let s of sekkiDates){
+  for(let i=0;i<sekkiDates.length;i++){
+    const s = sekkiDates[i];
     const d = new Date(year, s.month-1, s.day);
     if(date >= d){
       latest = s.name;
@@ -234,6 +235,7 @@ function getSekki(date){
   }
 
   return latest;
+}
 }
 
 document.getElementById("season").innerText =
