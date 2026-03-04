@@ -117,7 +117,23 @@ h1{
   <div class="month-list" id="monthList"></div>
 
   <h3 style="margin-top:30px;">二十四節気（簡易表示）</h3>
-<// ===== 高精度旧暦計算 =====
+
+}div id="season"></div>
+
+  <h3 style="margin-top:30px;">新月・満月</h3>
+  <div id="lunation"></div>
+</div>
+
+<div class="footer">
+  静かに、凛として。
+</div>
+
+</div>
+
+<script>
+// 今日の日付
+const today = new Date();
+// ===== 高精度旧暦計算 =====
 
 // 既知の新月（2000年1月6日 18:14 UTC）
 const knownNewMoon = new Date("2000-01-06T18:14:00Z");
@@ -138,22 +154,7 @@ function getOldLunarMonth(date){
   const daysSince = (date - knownNewMoon) / 86400000;
   const monthCount = Math.floor(daysSince / synodicMonth);
   return (monthCount % 12 + 12) % 12 + 1;
-}div id="season"></div>
-
-  <h3 style="margin-top:30px;">新月・満月</h3>
-  <div id="lunation"></div>
-</div>
-
-<div class="footer">
-  静かに、凛として。
-</div>
-
-</div>
-
-<script>
-// 今日の日付
-const today = new Date();
-
+}
 
 </script>
 
