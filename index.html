@@ -110,7 +110,7 @@ h1{
 <div class="section">
   <div>🌑 月情報</div>
   <div id="moon"></div>
-</div>
+</div><div id="lunar" class="small"></div>
 
 <div class="scroll-area">
   <h3>今月の吉日一覧</h3>
@@ -155,7 +155,6 @@ function getOldLunarMonth(date){
   const monthCount = Math.floor(daysSince / synodicMonth);
   return (monthCount % 12 + 12) % 12 + 1;
 }
-  <div id="lunar" class="small"></div>
 // ===== 六曜（旧暦ベース） =====
 const rokuyoNames = ["先勝","友引","先負","仏滅","大安","赤口"];
 
