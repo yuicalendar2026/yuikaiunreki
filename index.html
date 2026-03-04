@@ -132,6 +132,19 @@ h1{
 <script>
 // 今日の日付
 const today = new Date();
+// 吉日判定（サンプル本格化準備）
+function isLuckyDay(date){
+  const luckyDates = [
+    "2026-01-05",
+    "2026-03-10",
+    "2026-05-15"
+  ];
+  const todayStr = date.toISOString().split("T")[0];
+  return luckyDates.includes(todayStr);
+}
+
+document.getElementById("goodday").innerText =
+isLuckyDay(today) ? "一粒万倍日" : "通常日";
 const year = today.getFullYear();
 const month = today.getMonth()+1;
 const day = today.getDate();
