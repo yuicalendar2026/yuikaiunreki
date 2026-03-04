@@ -9,66 +9,150 @@
 body{
   margin:0;
   font-family:"Hiragino Mincho ProN",serif;
-  background:linear-gradient(to bottom,#f5f1e8,#e8dfcf);
+  background:
+    radial-gradient(circle at 10% 20%,rgba(255,215,120,.25),transparent 40%),
+    radial-gradient(circle at 80% 30%,rgba(255,200,120,.2),transparent 40%),
+    linear-gradient(to bottom,#f8f3ea,#e7ddcd);
+  color:#3b2f2f;
+  overflow-x:hidden;
+}
+
+/* 金粉アニメ */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:radial-gradient(rgba(212,175,55,.3) 1px, transparent 1px);
+  background-size:40px 40px;
+  animation:shine 20s linear infinite;
+  pointer-events:none;
+}
+
+@keyframes shine{
+  from{transform:translateY(0);}
+  to{transform:translateY(-200px);}
+}
+
+/* ===== ヘッダー ===== */
+.header{
   text-align:center;
-  color:#222;
+  padding:25px 10px 10px;
 }
 
-h1{
-  margin-top:30px;
-  font-size:26px;
-  letter-spacing:3px;
+.logo{
+  font-size:30px;
+  letter-spacing:8px;
+  font-weight:bold;
 }
 
-.card{
-  background:white;
-  margin:20px auto;
-  padding:20px;
-  width:92%;
-  max-width:420px;
+.tagline{
+  font-size:14px;
+  opacity:.7;
+  margin-top:5px;
+}
+
+/* ===== 日付 ===== */
+.date{
+  text-align:center;
+  margin-top:10px;
+}
+
+.date-main{
+  font-size:42px;
+  font-weight:bold;
+}
+
+.week{
+  display:inline-block;
+  background:#b30000;
+  color:white;
+  padding:6px 12px;
   border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  margin-left:6px;
+  font-size:16px;
 }
 
-.big{
+.rokuyo{
+  display:inline-block;
+  margin-top:15px;
+  padding:8px 25px;
+  border-radius:30px;
+  background:linear-gradient(135deg,#fff8e6,#f3e2c4);
+  border:1px solid #d4b77a;
   font-size:20px;
-  margin:8px 0;
 }
 
-.highlight{
+.taian{
   color:#b30000;
   font-weight:bold;
 }
 
-/* ===== コンパス ===== */
-#compassCircle{
-  width:180px;
-  height:180px;
+/* ===== 月表示 ===== */
+.moon-box{
+  text-align:center;
+  margin:25px;
+  padding:25px;
+  border-radius:25px;
+  background:linear-gradient(135deg,#fff,#f4ede3);
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+.moon-circle{
+  width:120px;
+  height:120px;
+  margin:0 auto 10px;
   border-radius:50%;
-  margin:30px auto;
+  background:radial-gradient(circle at 30% 30%,#fff8dc,#d4af37);
+  box-shadow:0 0 25px rgba(212,175,55,.6);
+}
+
+/* ===== 2カラム ===== */
+.section{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:0 15px 80px;
+}
+
+.card{
+  background:white;
+  border-radius:25px;
+  padding:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.card h3{
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+/* ===== コンパス ===== */
+#compass{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  margin:10px auto;
   position:relative;
-  background:radial-gradient(circle,#fff 55%,#ddd 100%);
-  border:6px solid #c9a646;
-  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+  background:radial-gradient(circle,#fff 60%,#ddd);
+  border:4px solid #c9a646;
 }
 
 #needle{
   width:4px;
-  height:80px;
+  height:55px;
   background:#b30000;
   position:absolute;
   top:50%;
   left:50%;
   transform-origin:50% 100%;
   transform:translate(-50%,-100%) rotate(0deg);
-  border-radius:2px;
   transition:transform 2.5s cubic-bezier(.25,1.5,.5,1);
 }
 
-#centerDot{
-  width:14px;
-  height:14px;
-  background:#111;
+#center{
+  width:10px;
+  height:10px;
+  background:#222;
   border-radius:50%;
   position:absolute;
   top:50%;
@@ -77,186 +161,122 @@ h1{
 }
 
 button{
-  padding:12px 24px;
-  font-size:16px;
+  padding:6px 16px;
   border:none;
-  border-radius:30px;
+  border-radius:20px;
   background:#111;
   color:white;
-  cursor:pointer;
-  margin-top:15px;
+  font-size:13px;
 }
 
-button:hover{ opacity:0.85; }
+/* ===== 数秘 ===== */
+.number{
+  font-size:48px;
+  font-weight:bold;
+  color:#b30000;
+  text-align:center;
+}
 
-/* ===== カレンダー ===== */
-.calendar-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
+.lucky-list{
   margin-top:10px;
-}
-
-.day{
-  padding:8px 0;
-  border-radius:12px;
   font-size:14px;
 }
 
-.today{
-  background:#111;
-  color:white;
-}
-
-.tensha{
-  background:#c9a646;
-  color:white;
-}
-
-.taian{
-  background:#f8d7da;
-}
-
-.fullmoon{
-  box-shadow:0 0 10px #ffcc00;
-}
-
-footer{
-  margin:40px 0 20px;
+/* ===== ナビ ===== */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  box-shadow:0 -5px 15px rgba(0,0,0,.1);
   font-size:12px;
-  opacity:0.6;
 }
+.nav div{text-align:center;}
 </style>
 </head>
 
 <body>
 
-<h1>結 - 開運暦</h1>
-
-<div class="card">
-  <div id="todayDate" class="big"></div>
-  <div id="rokuyo" class="big"></div>
-  <div id="moon" class="big"></div>
-  <div id="luckyDay" class="big highlight"></div>
+<div class="header">
+  <div class="logo">結 開運暦</div>
+  <div class="tagline">— 毎日に、神さまの流れを —</div>
 </div>
 
-<div id="compassCircle">
-  <div id="needle"></div>
-  <div id="centerDot"></div>
+<div class="date">
+  <div id="dateMain" class="date-main"></div>
+  <div id="week" class="week"></div><br>
+  <div id="rokuyo" class="rokuyo"></div>
 </div>
 
-<button onclick="spinCompass()">運命を回す</button>
-
-<!-- 👇 カレンダーここ -->
-<div class="card">
-  <h3>📅 今月のカレンダー</h3>
-  <div id="calendar" class="calendar-grid"></div>
+<div class="moon-box">
+  <div class="moon-circle"></div>
+  <div id="moonText"></div>
 </div>
 
-<div class="card">
-  <h3>👑 今月の天赦日</h3>
-  <div id="monthlyLucky"></div>
+<div class="section">
+
+  <div class="card">
+    <h3>🔮 本日の吉方位</h3>
+    <div id="compass">
+      <div id="needle"></div>
+      <div id="center"></div>
+    </div>
+    <button onclick="spin()">回す</button>
+  </div>
+
+  <div class="card">
+    <h3>✨ 今日の数秘</h3>
+    <div id="number" class="number"></div>
+    <div id="luckyList" class="lucky-list"></div>
+  </div>
+
 </div>
 
-<footer>© 結 - 開運暦</footer>
+<div class="nav">
+  <div>🏠<br>ホーム</div>
+  <div>📅<br>カレンダー</div>
+  <div>🧭<br>吉方位</div>
+  <div>🔢<br>数秘</div>
+  <div>✉️<br>メッセージ</div>
+</div>
 
 <script>
-// ===== 日付取得 =====
 const today=new Date();
 const yyyy=today.getFullYear();
-const mm=String(today.getMonth()+1).padStart(2,'0');
-const dd=String(today.getDate()).padStart(2,'0');
-const todayStr=`${yyyy}-${mm}-${dd}`;
+const mm=today.getMonth()+1;
+const dd=today.getDate();
+const weekList=["日","月","火","水","木","金","土"];
 
-document.getElementById("todayDate").innerText=
-`${yyyy}年 ${mm}月 ${dd}日`;
+document.getElementById("dateMain").innerText=
+`${yyyy}年${mm}月${dd}日`;
+document.getElementById("week").innerText=weekList[today.getDay()];
 
-// ===== 六曜 =====
 const rokuyoList=["先勝","友引","先負","仏滅","大安","赤口"];
 const base=new Date(2025,0,1);
 const diff=Math.floor((today-base)/(1000*60*60*24));
-const todayRokuyo=rokuyoList[(diff%6+6)%6];
-document.getElementById("rokuyo").innerText="六曜："+todayRokuyo;
+const r=rokuyoList[(diff%6+6)%6];
+const rEl=document.getElementById("rokuyo");
+rEl.innerText="六曜："+r;
+if(r==="大安"){rEl.classList.add("taian");}
 
-// ===== 天赦日データ =====
-const tenshaDays=[
-"2026-01-06","2026-03-21","2026-06-05","2026-08-07","2026-10-06","2026-12-21",
-"2027-01-05","2027-03-20","2027-06-04","2027-08-07","2027-10-05","2027-12-20",
-"2028-01-05","2028-03-19","2028-06-03","2028-08-06","2028-10-04","2028-12-19",
-"2029-01-04","2029-03-19","2029-06-02","2029-08-06","2029-10-03","2029-12-18",
-"2030-01-03","2030-03-18","2030-06-01","2030-08-05","2030-10-02","2030-12-17"
-];
+document.getElementById("moonText").innerText="月齢表示（強化可）";
 
-// ===== 吉日判定 =====
-let luckyText="通常日";
-if(todayRokuyo==="大安"){ luckyText="🌸 大安吉日"; }
-if(tenshaDays.includes(todayStr)){
-  luckyText="👑✨ 天赦日（最強開運日）✨";
-}
-document.getElementById("luckyDay").innerText=luckyText;
+const num=(yyyy+mm+dd).toString()
+.split('').reduce((a,b)=>a+Number(b),0)%9||9;
+document.getElementById("number").innerText=num;
 
-// ===== 月齢 =====
-function getMoonAge(date){
-  const base=new Date(2025,0,29);
-  const diff=(date-base)/(1000*60*60*24);
-  return (diff%29.53+29.53)%29.53;
-}
-const moonAge=getMoonAge(today);
-let moonText="";
-if(moonAge<1){ moonText="🌑 新月"; }
-else if(Math.abs(moonAge-14.7)<1){ moonText="🌕 満月"; }
-else{ moonText="🌙 月齢 "+moonAge.toFixed(1); }
-document.getElementById("moon").innerText=moonText;
+document.getElementById("luckyList").innerHTML=
+r==="大安"?"🌸 大安吉日":"通常日";
 
-// ===== コンパス =====
 let angle=0;
-function spinCompass(){
-  const needle=document.getElementById("needle");
+function spin(){
   angle+=720+Math.random()*360;
-  needle.style.transform=
+  document.getElementById("needle").style.transform=
   `translate(-50%,-100%) rotate(${angle}deg)`;
 }
-
-// ===== カレンダー生成 =====
-function generateCalendar(){
-  const cal=document.getElementById("calendar");
-  cal.innerHTML="";
-
-  const firstDay=new Date(yyyy,today.getMonth(),1).getDay();
-  const lastDate=new Date(yyyy,today.getMonth()+1,0).getDate();
-
-  for(let i=0;i<firstDay;i++){
-    cal.innerHTML+="<div></div>";
-  }
-
-  for(let d=1; d<=lastDate; d++){
-    const dateStr=`${yyyy}-${mm}-${String(d).padStart(2,'0')}`;
-    const dateObj=new Date(yyyy,today.getMonth(),d);
-    const dayDiff=Math.floor((dateObj-base)/(1000*60*60*24));
-    const r=rokuyoList[(dayDiff%6+6)%6];
-
-    let cls="day";
-    if(d==dd){ cls+=" today"; }
-    if(tenshaDays.includes(dateStr)){ cls+=" tensha"; }
-    if(r==="大安"){ cls+=" taian"; }
-
-    cal.innerHTML+=`<div class="${cls}">${d}</div>`;
-  }
-}
-generateCalendar();
-
-// ===== 今月天赦日一覧 =====
-function showMonthlyTensha(){
-  const list=document.getElementById("monthlyLucky");
-  list.innerHTML="";
-  const thisMonth=yyyy+"-"+mm;
-  tenshaDays.forEach(day=>{
-    if(day.startsWith(thisMonth)){
-      list.innerHTML+="👑 "+day+"<br>";
-    }
-  });
-}
-showMonthlyTensha();
 </script>
 
 </body>
