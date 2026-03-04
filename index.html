@@ -155,7 +155,18 @@ function getOldLunarMonth(date){
   const monthCount = Math.floor(daysSince / synodicMonth);
   return (monthCount % 12 + 12) % 12 + 1;
 }
+// ===== 六曜（旧暦ベース） =====
+const rokuyoNames = ["先勝","友引","先負","仏滅","大安","赤口"];
 
+function calculateRokuyo(date){
+  const oldMonth = getOldLunarMonth(date);
+  const oldDay = getOldLunarDay(date);
+  return rokuyoNames[(oldMonth + oldDay) % 6];
+}
+
+// 六曜表示
+document.getElementById("rokuyo").innerText =
+  `六曜：${calculateRokuyo(today)}`;
 </script>
 
 </body>
