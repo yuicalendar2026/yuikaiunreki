@@ -5,84 +5,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>結 - 開運暦</title>
 
-<link rel="manifest" href="manifest.json">
-
 <style>
 body{
   margin:0;
   font-family:"Hiragino Mincho ProN",serif;
-  background:
-    radial-gradient(circle at 20% 10%,rgba(255,215,120,.25),transparent 40%),
-    linear-gradient(to bottom,#f8f3ea,#e7ddcd);
+  background:linear-gradient(to bottom,#f8f3ea,#e7ddcd);
   color:#3b2f2f;
-  overflow-x:hidden;
 }
 
-/* 桜アニメ */
-.sakura{
-  position:fixed;
-  top:-10px;
-  font-size:18px;
-  animation:fall linear infinite;
-  pointer-events:none;
-}
-@keyframes fall{
-  to{transform:translateY(110vh) rotate(360deg);}
-}
-
-/* 金粉 */
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background-image:radial-gradient(rgba(212,175,55,.25) 1px, transparent 1px);
-  background-size:50px 50px;
-  animation:shine 25s linear infinite;
-  pointer-events:none;
-}
-@keyframes shine{
-  from{transform:translateY(0);}
-  to{transform:translateY(-200px);}
-}
-
-/* ヘッダー */
-.header{text-align:center;padding:25px;}
-.logo{font-size:28px;letter-spacing:6px;font-weight:bold;}
+.header{text-align:center;padding:20px;}
+.logo{font-size:26px;letter-spacing:6px;font-weight:bold;}
 .tagline{font-size:14px;opacity:.7;}
 
-.date{text-align:center;}
-.date-main{font-size:40px;font-weight:bold;}
-.week{background:#b30000;color:white;padding:5px 12px;border-radius:20px;margin-left:6px;}
+.date{text-align:center;margin-top:10px;}
+.date-main{font-size:34px;font-weight:bold;}
+.week{background:#b30000;color:white;padding:5px 10px;border-radius:20px;margin-left:6px;}
 .rokuyo{margin-top:10px;padding:6px 20px;border-radius:20px;background:#fff8e6;display:inline-block;}
 .taian{color:#b30000;font-weight:bold;}
 
 .moon-box{text-align:center;margin:20px;}
 .moon-circle{
-  width:110px;height:110px;margin:0 auto 10px;
+  width:100px;height:100px;margin:0 auto 10px;
   border-radius:50%;
   background:radial-gradient(circle at 30% 30%,#fff,#d4af37);
-  box-shadow:0 0 20px rgba(212,175,55,.6);
+  box-shadow:0 0 15px rgba(212,175,55,.6);
 }
 
-.section{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 15px 90px;}
-.card{background:white;border-radius:20px;padding:15px;box-shadow:0 8px 20px rgba(0,0,0,.08);}
+.calendar{
+  margin:20px;
+  padding:15px;
+  background:white;
+  border-radius:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
 
-#compass{width:120px;height:120px;border-radius:50%;margin:10px auto;background:#fff;border:4px solid #c9a646;position:relative;}
-#needle{width:4px;height:55px;background:#b30000;position:absolute;top:50%;left:50%;transform-origin:50% 100%;transform:translate(-50%,-100%) rotate(0deg);transition:2.5s;}
-#center{width:10px;height:10px;background:#222;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  margin-top:10px;
+}
 
-button{padding:6px 14px;border:none;border-radius:20px;background:#111;color:white;}
+.day{
+  padding:8px 0;
+  border-radius:10px;
+  font-size:13px;
+  cursor:pointer;
+}
 
-.number{font-size:42px;color:#b30000;text-align:center;font-weight:bold;}
+.today{
+  background:#111;
+  color:white;
+}
 
-.calendar{margin:20px;padding:15px;background:white;border-radius:20px;box-shadow:0 8px 20px rgba(0,0,0,.08);}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px;}
-.day{padding:6px 0;border-radius:10px;font-size:12px;}
-.today{background:#111;color:white;}
-.tensha{background:#d4af37;color:white;}
-.manbai{background:#f8d7da;}
+.manbai{
+  background:#f8d7da;
+}
 
-.nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -5px 15px rgba(0,0,0,.1);font-size:12px;}
+.hasEvent{
+  background:#ffe4b5;
+  border:1px solid #d4af37;
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  box-shadow:0 -5px 15px rgba(0,0,0,.1);
+  font-size:12px;
+}
 .nav div{text-align:center;}
 </style>
 </head>
@@ -105,22 +100,8 @@ button{padding:6px 14px;border:none;border-radius:20px;background:#111;color:whi
 <div id="moonText"></div>
 </div>
 
-<div class="section">
-<div class="card">
-<h3>🔮 本日の吉方位</h3>
-<div id="compass"><div id="needle"></div><div id="center"></div></div>
-<button onclick="spin()">回す</button>
-</div>
-
-<div class="card">
-<h3>✨ 今日の数秘</h3>
-<div id="number" class="number"></div>
-<div id="lucky"></div>
-</div>
-</div>
-
 <div class="calendar">
-<h3>📅 今月のカレンダー</h3>
+<h3>📅 今月のカレンダー（タップで予定入力）</h3>
 <div id="calendar" class="calendar-grid"></div>
 </div>
 
@@ -139,8 +120,10 @@ const mm=today.getMonth();
 const dd=today.getDate();
 const weekList=["日","月","火","水","木","金","土"];
 
-document.getElementById("dateMain").innerText=`${yyyy}年${mm+1}月${dd}日`;
-document.getElementById("week").innerText=weekList[today.getDay()];
+document.getElementById("dateMain").innerText=
+`${yyyy}年${mm+1}月${dd}日`;
+document.getElementById("week").innerText=
+weekList[today.getDay()];
 
 // 六曜
 const rokuyoList=["先勝","友引","先負","仏滅","大安","赤口"];
@@ -150,57 +133,54 @@ const r=rokuyoList[(diff%6+6)%6];
 document.getElementById("rokuyo").innerText="六曜："+r;
 if(r==="大安") document.getElementById("rokuyo").classList.add("taian");
 
-// 月齢計算
+// 月齢
 const moonBase=new Date(2025,0,29);
 const moonAge=((today-moonBase)/(1000*60*60*24))%29.53;
 document.getElementById("moonText").innerText="月齢 "+moonAge.toFixed(1);
 
-// 数秘
-const num=(yyyy+(mm+1)+dd).toString().split('').reduce((a,b)=>a+Number(b),0)%9||9;
-document.getElementById("number").innerText=num;
-
-// 天赦日5年分
-const tensha=["2026-01-06","2026-03-21","2026-06-05","2026-08-07","2026-10-06","2026-12-21"];
-
-// 一粒万倍日簡易（9日周期）
+// 一粒万倍日（簡易9日周期）
 function isManbai(d){return d%9===0;}
 
 function generateCalendar(){
-const cal=document.getElementById("calendar");
-cal.innerHTML="";
-const first=new Date(yyyy,mm,1).getDay();
-const last=new Date(yyyy,mm+1,0).getDate();
-for(let i=0;i<first;i++) cal.innerHTML+="<div></div>";
-for(let d=1;d<=last;d++){
-let cls="day";
-if(d===dd) cls+=" today";
-if(isManbai(d)) cls+=" manbai";
-cal.innerHTML+=`<div class="${cls}">${d}</div>`;
-}
+  const cal=document.getElementById("calendar");
+  cal.innerHTML="";
+  const first=new Date(yyyy,mm,1).getDay();
+  const last=new Date(yyyy,mm+1,0).getDate();
+
+  for(let i=0;i<first;i++) cal.innerHTML+="<div></div>";
+
+  for(let d=1;d<=last;d++){
+    let cls="day";
+    if(d===dd) cls+=" today";
+    if(isManbai(d)) cls+=" manbai";
+
+    const key=`${yyyy}-${mm+1}-${d}`;
+    const saved=localStorage.getItem(key);
+    if(saved) cls+=" hasEvent";
+
+    cal.innerHTML+=`
+      <div class="${cls}" onclick="openMemo(${d})">
+        ${d}
+      </div>`;
+  }
 }
 generateCalendar();
 
-// 桜生成
-for(let i=0;i<10;i++){
-const s=document.createElement("div");
-s.className="sakura";
-s.innerText="🌸";
-s.style.left=Math.random()*100+"%";
-s.style.animationDuration=(5+Math.random()*5)+"s";
-document.body.appendChild(s);
-}
+// 予定入力
+function openMemo(day){
+  const key=`${yyyy}-${mm+1}-${day}`;
+  const existing=localStorage.getItem(key) || "";
+  const text=prompt(`${day}日の予定を入力`, existing);
 
-// コンパス
-let angle=0;
-function spin(){
-angle+=720+Math.random()*360;
-document.getElementById("needle").style.transform=
-`translate(-50%,-100%) rotate(${angle}deg)`;
-}
+  if(text===null) return;
 
-// PWA
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("sw.js");
+  if(text===""){
+    localStorage.removeItem(key);
+  }else{
+    localStorage.setItem(key,text);
+  }
+
+  generateCalendar();
 }
 </script>
 
