@@ -133,9 +133,8 @@ h1{
 <script>
 // 今日の日付
 const today = new Date();
-// ===== 高精度旧暦計算 =====
 
-// 既知の新月（2000年1月6日 18:14 UTC）
+// ===== 旧暦計算 =====
 const knownNewMoon = new Date("2000-01-06T18:14:00Z");
 const synodicMonth = 29.53058867;
 
@@ -144,18 +143,17 @@ function getMoonAge(date){
   return (days % synodicMonth + synodicMonth) % synodicMonth;
 }
 
-// 旧暦日（近似）
 function getOldLunarDay(date){
   return Math.floor(getMoonAge(date)) + 1;
 }
 
-// 旧暦月（近似）
 function getOldLunarMonth(date){
   const daysSince = (date - knownNewMoon) / 86400000;
   const monthCount = Math.floor(daysSince / synodicMonth);
   return (monthCount % 12 + 12) % 12 + 1;
 }
-// ===== 六曜（旧暦ベース） =====
+
+// ===== 六曜 =====
 const rokuyoNames = ["先勝","友引","先負","仏滅","大安","赤口"];
 
 function calculateRokuyo(date){
@@ -164,13 +162,14 @@ function calculateRokuyo(date){
   return rokuyoNames[(oldMonth + oldDay) % 6];
 }
 
-// 六曜表示
 document.getElementById("rokuyo").innerText =
   `六曜：${calculateRokuyo(today)}`;
-  document.getElementById("lunar").innerText =
+
+// ===== 旧暦表示 =====
+document.getElementById("lunar").innerText =
   `旧暦 ${getOldLunarMonth(today)}月${getOldLunarDay(today)}日`;
 
-  // 今日の日付表示
+// ===== 今日の日付 =====
 const year = today.getFullYear();
 const month = today.getMonth() + 1;
 const day = today.getDate();
