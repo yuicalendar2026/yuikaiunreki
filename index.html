@@ -5,230 +5,186 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>結 - 開運暦</title>
 
+<!-- ホーム画面追加用 -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f5f1e8">
+
 <style>
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-  background:#fdfaf6;
+  font-family: "Hiragino Mincho ProN", serif;
+  background:#f5f1e8;
+  color:#333;
   text-align:center;
 }
 
+.container{
+  padding:40px 20px;
+  max-width:500px;
+  margin:auto;
+}
+
 h1{
-  margin-top:20px;
-  font-size:24px;
+  font-size:20px;
+  font-weight:normal;
+  letter-spacing:2px;
 }
 
-.month-control{
-  margin:20px 0;
-  font-size:18px;
-}
-.cover{
-  width:100%;
-  max-width:500px;
-  margin:0 auto 20px;
+.date{
+  font-size:22px;
+  margin:20px 0 5px;
 }
 
-.cover img{
-  width:100%;
-  display:block;
-  border-radius:12px;
-}
-
-.menu{
-  max-width:500px;
-  margin:0 auto 30px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.menu a{
-  text-decoration:none;
-  background:white;
-  padding:12px;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.08);
-  color:#333;
-}
-  .section{
-  max-width:500px;
-  margin:30px auto;
-  background:white;
+.section{
+  margin:30px 0;
   padding:20px;
-  border-radius:12px;
-  box-shadow:0 3px 8px rgba(0,0,0,0.08);
-  text-align:left;
-}
-
-.section h2{
-  margin-top:0;
-}
-button{
-  padding:6px 12px;
-  margin:0 10px;
-  font-size:16px;
-  border:none;
-  border-radius:6px;
-  background:#c8a96a;
-  color:white;
-  cursor:pointer;
-}
-
-button:hover{
-  opacity:0.8;
-}
-
-#calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
-  padding:15px;
-  max-width:500px;
-  margin:0 auto;
-}
-
-.day{
-  padding:12px 0;
   background:white;
-  border-radius:8px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.08);
-  cursor:pointer;
+  border-radius:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
-.day:hover{
-  background:#f3e9d7;
+.small{
+  font-size:14px;
+  opacity:0.7;
 }
 
-#fortuneResult{
-  margin:25px;
-  font-size:18px;
-  min-height:30px;
+.highlight{
+  color:#b22222;
+  font-weight:bold;
+}
+
+.scroll-area{
+  margin-top:40px;
+  padding:30px 20px;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+}
+
+.month-list{
+  display:flex;
+  overflow-x:auto;
+  gap:15px;
+  padding:10px 0;
+}
+
+.day-card{
+  min-width:80px;
+  padding:15px;
+  background:#f0ede6;
+  border-radius:12px;
+  font-size:14px;
+}
+
+.footer{
+  margin:40px 0 20px;
+  font-size:12px;
+  opacity:0.6;
 }
 </style>
 </head>
-
 <body>
 
+<div class="container">
+
 <h1>結 - 開運暦</h1>
-<div class="cover">
-<img src="42F56C68-29E9-40D0-BC1D-5EDE65F155C9.png">
+
+<div class="date" id="date"></div>
+<div id="rokuyo"></div>
+
+<div class="section">
+  <div>🔮 吉方位</div>
+  <div style="font-size:40px;margin:10px;">🧭</div>
+  <div class="small">南東（サンプル）</div>
 </div>
 
-<div class="menu">
-  <a href="#kippoui">🔮 今日の吉方位</a>
-  <a href="#numerology">🔢 数秘（日運）</a>
-  <a href="#special">🌟 吉日</a>
-  <a href="#moon">🌑 月</a>
-  <a href="#rokuyo">📅 六曜</a>
-  <a href="#season">🍃 二十四節気</a>
+<div class="section">
+  <div>🔢 今日の数秘</div>
+  <div id="numerology" style="font-size:28px;margin-top:10px;"></div>
 </div>
 
-<div class="month-control">
-  <button onclick="changeMonth(-1)">◀</button>
-  <span id="monthLabel"></span>
-  <button onclick="changeMonth(1)">▶</button>
+<div class="section">
+  <div>🌟 本日の吉日情報</div>
+  <div id="goodday" class="highlight" style="margin-top:10px;"></div>
 </div>
 
-<div id="calendar"></div>
-<div class="section" id="kippoui">
-  <h2>🔮 今日の吉方位</h2>
-
-  <div class="compass">
-    <div class="north">北</div>
-    <div class="south">南</div>
-    <div class="east lucky">東</div>
-    <div class="west">西</div>
-  </div>
-
-  <p>✨ 東が本日の開運方位。新しい挑戦に良い流れ。</p>
+<div class="section">
+  <div>🌑 月情報</div>
+  <div id="moon"></div>
 </div>
 
-<div class="section" id="numerology">
-  <h2>🔢 数秘（日運）</h2>
-  <p>今日は「3」。創造と楽しさのエネルギー。</p>
+<div class="scroll-area">
+  <h3>今月の吉日一覧</h3>
+  <div class="month-list" id="monthList"></div>
+
+  <h3 style="margin-top:30px;">二十四節気（簡易表示）</h3>
+  <div id="season"></div>
+
+  <h3 style="margin-top:30px;">新月・満月</h3>
+  <div id="lunation"></div>
 </div>
 
-<div class="section" id="special">
-  <h2>🌟 吉日</h2>
-  <p>今日は小さな願いを叶えるのに良い日。</p>
+<div class="footer">
+  静かに、凛として。
 </div>
 
-<div class="section" id="moon">
-  <h2>🌑 月</h2>
-  <p>満月に向かう期間。感情が高まりやすい。</p>
 </div>
-
-<div class="section" id="rokuyo">
-  <h2>📅 六曜</h2>
-  <p>本日は大安。物事を始めるのに最適。</p>
-</div>
-
-<div class="section" id="season">
-  <h2>🍃 二十四節気</h2>
-  <p>春の気配が高まる時期。</p>
-</div>
-<div id="fortuneResult">日付を選んでください</div>
 
 <script>
-let currentMonth = new Date();
+// 今日の日付
+const today = new Date();
+const year = today.getFullYear();
+const month = today.getMonth()+1;
+const day = today.getDate();
 
-function changeMonth(offset){
-  currentMonth.setMonth(currentMonth.getMonth()+offset);
-  renderCalendar();
-}
+document.getElementById("date").innerText =
+`${year}年 ${month}月 ${day}日`;
 
-function showFortune(day){
-  const fortunes=["大吉","中吉","小吉","吉","末吉","凶"];
-  const result=fortunes[(day+currentMonth.getMonth())%fortunes.length];
+// 六曜（超簡易ロジック）
+const rokuyoList = ["大安","赤口","先勝","友引","先負","仏滅"];
+const rokuyo = rokuyoList[(month + day) % 6];
+document.getElementById("rokuyo").innerText = `六曜：${rokuyo}`;
 
-  document.getElementById("fortuneResult").innerText =
-    currentMonth.getFullYear()+"年"+
-    (currentMonth.getMonth()+1)+"月"+
-    day+"日 の運勢： "+result;
-}
-
-function renderCalendar(){
-  const year=currentMonth.getFullYear();
-  const month=currentMonth.getMonth();
-
-  document.getElementById("monthLabel").innerText =
-    year+"年"+(month+1)+"月";
-
-  const calendar=document.getElementById("calendar");
-  calendar.innerHTML="";
-
-  const firstDay=new Date(year,month,1).getDay();
-  const lastDate=new Date(year,month+1,0).getDate();
-
-  // 空白セル
-  for(let i=0;i<firstDay;i++){
-    const empty=document.createElement("div");
-    calendar.appendChild(empty);
+// 数秘
+function numerologyCalc(y,m,d){
+  let sum = (""+y+m+d).split("").reduce((a,b)=>a+Number(b),0);
+  while(sum > 9){
+    sum = (""+sum).split("").reduce((a,b)=>a+Number(b),0);
   }
+  return sum;
+}
+document.getElementById("numerology").innerText =
+numerologyCalc(year,month,day);
 
-  // 日付セル
-  for(let day=1;day<=lastDate;day++){
-    const cell=document.createElement("div");
-    cell.className="day";
-    cell.innerText=day;
+// 月齢（簡易）
+function moonPhase(date){
+  const lp = 2551443;
+  const new_moon = new Date(1970,0,7,20,35,0);
+  const phase = ((date.getTime() - new_moon.getTime())/1000) % lp;
+  return Math.floor(phase/(24*3600));
+}
+document.getElementById("moon").innerText =
+`月齢 ${moonPhase(today)}`;
 
-    cell.onclick=function(){
-  const year = currentMonth.getFullYear();
-  const month = currentMonth.getMonth()+1;
+// 吉日サンプル
+const goodSample = ["天赦日","一粒万倍日","大安"];
+document.getElementById("goodday").innerText =
+goodSample[day % goodSample.length];
 
-  const dateString =
-    year + "-" +
-    String(month).padStart(2,"0") + "-" +
-    String(day).padStart(2,"0");
-
-  window.location.href = "detail.html?date=" + dateString;
-};
-
-    calendar.appendChild(cell);
-  }
+// 今月吉日一覧（サンプル）
+const monthList = document.getElementById("monthList");
+for(let i=1;i<=30;i+=5){
+  const div = document.createElement("div");
+  div.className="day-card";
+  div.innerText=`${month}/${i}`;
+  monthList.appendChild(div);
 }
 
-renderCalendar();
+// 二十四節気（簡易）
+document.getElementById("season").innerText="立夏（サンプル表示）";
+
+// 新月満月（簡易）
+document.getElementById("lunation").innerText="今月の満月：15日（サンプル）";
+
 </script>
 
 </body>
