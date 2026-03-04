@@ -117,7 +117,28 @@ h1{
   <div class="month-list" id="monthList"></div>
 
   <h3 style="margin-top:30px;">二十四節気（簡易表示）</h3>
-  <div id="season"></div>
+<// ===== 高精度旧暦計算 =====
+
+// 既知の新月（2000年1月6日 18:14 UTC）
+const knownNewMoon = new Date("2000-01-06T18:14:00Z");
+const synodicMonth = 29.53058867;
+
+function getMoonAge(date){
+  const days = (date - knownNewMoon) / 86400000;
+  return (days % synodicMonth + synodicMonth) % synodicMonth;
+}
+
+// 旧暦日（近似）
+function getOldLunarDay(date){
+  return Math.floor(getMoonAge(date)) + 1;
+}
+
+// 旧暦月（近似）
+function getOldLunarMonth(date){
+  const daysSince = (date - knownNewMoon) / 86400000;
+  const monthCount = Math.floor(daysSince / synodicMonth);
+  return (monthCount % 12 + 12) % 12 + 1;
+}div id="season"></div>
 
   <h3 style="margin-top:30px;">新月・満月</h3>
   <div id="lunation"></div>
@@ -132,119 +153,7 @@ h1{
 <script>
 // 今日の日付
 const today = new Date();
-// ===== 干支計算 =====
-const etoList = [
-"甲子","乙丑","丙寅","丁卯","戊辰","己巳","庚午","辛未","壬申","癸酉",
-"甲戌","乙亥","丙子","丁丑","戊寅","己卯","庚辰","辛巳","壬午","癸未",
-"甲申","乙酉","丙戌","丁亥","戊子","己丑","庚寅","辛卯","壬辰","癸巳",
-"甲午","乙未","丙申","丁酉","戊戌","己亥","庚子","辛丑","壬寅","癸卯",
-"甲辰","乙巳","丙午","丁未","戊申","己酉","庚戌","辛亥","壬子","癸丑",
-"甲寅","乙卯","丙辰","丁巳","戊午","己未","庚申","辛酉","壬戌","癸亥"
-];
 
-// 1900年1月1日を基準にする
-function getEto(date){
-  const base = new Date(1900,0,1);
-  const diff = Math.floor((date - base) / 86400000);
-  return etoList[(diff % 60 + 60) % 60];
-}
-
-// ===== 一粒万倍日の干支 =====
-// 実際に使われる干支一覧
-const ichiryuManbaiEto = [
-"甲子","乙丑","丙寅","丁卯",
-"戊辰","己巳","庚午","辛未",
-"壬申","癸酉"
-];
-
-// ===== 吉日判定 =====
-function getLuckyInfo(date){
-  const eto = getEto(date);
-  let result = [];
-
-  if(ichiryuManbaiEto.includes(eto)){
-    result.push("一粒万倍日");
-  }
-
-  return result.length > 0 ? result.join("・") : "特別な吉日はありません";
-}
-
-// ===== 表示 =====
-document.getElementById("goodday").innerText =
-  getLuckyInfo(today);
-// 吉日判定（サンプル本格化準備）
-function isLuckyDay(date){
-  const luckyDates = [
-    "2026-01-05",
-    "2026-03-10",
-    "2026-05-15"
-  ];
-  const todayStr = date.toISOString().split("T")[0];
-  return luckyDates.includes(todayStr);
-}
-
-document.getElementById("goodday").innerText =
-isLuckyDay(today) ? "一粒万倍日" : "特別な吉日はありません";
-const year = today.getFullYear();
-const month = today.getMonth()+1;
-const day = today.getDate();
-
-document.getElementById("date").innerText =
-`${year}年 ${month}月 ${day}日`;
-
-// 六曜（改良版）
-const rokuyoNames = ["大安","赤口","先勝","友引","先負","仏滅"];
-
-function calculateRokuyo(date){
-  const base = new Date(1900,0,1);
-  const diff = Math.floor((date - base) / 86400000);
-  return rokuyoNames[diff % 6];
-}
-
-document.getElementById("rokuyo").innerText =
-`六曜：${calculateRokuyo(today)}`;
-
-// 数秘
-function numerologyCalc(y,m,d){
-  let sum = (""+y+m+d).split("").reduce((a,b)=>a+Number(b),0);
-  while(sum > 9){
-    sum = (""+sum).split("").reduce((a,b)=>a+Number(b),0);
-  }
-  return sum;
-}
-document.getElementById("numerology").innerText =
-numerologyCalc(year,month,day);
-
-// 月齢（高精度近似）
-function preciseMoonAge(date){
-  const synodicMonth = 29.53058867;
-  const knownNewMoon = new Date("2000-01-06T18:14:00Z");
-  const days = (date - knownNewMoon) / 86400000;
-  return (days % synodicMonth + synodicMonth) % synodicMonth;
-}
-
-document.getElementById("moon").innerText =
-`月齢 ${preciseMoonAge(today).toFixed(1)}`;
-
-// 吉日サンプル
-const goodSample = ["天赦日","一粒万倍日","大安"];
-document.getElementById("goodday").innerText =
-goodSample[day % goodSample.length];
-
-// 今月吉日一覧（サンプル）
-const monthList = document.getElementById("monthList");
-for(let i=1;i<=30;i+=5){
-  const div = document.createElement("div");
-  div.className="day-card";
-  div.innerText=`${month}/${i}`;
-  monthList.appendChild(div);
-}
-
-// 二十四節気（簡易）
-document.getElementById("season").innerText="立夏（サンプル表示）";
-
-// 新月満月（簡易）
-document.getElementById("lunation").innerText="今月の満月：15日（サンプル）";
 
 </script>
 
