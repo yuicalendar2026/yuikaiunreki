@@ -1,4 +1,4 @@
-const CACHE_NAME = "kaiun-calendar-v1";
+const CACHE_NAME = "kaiun-calendar-v2";
 
 const urlsToCache = [
   "./",
