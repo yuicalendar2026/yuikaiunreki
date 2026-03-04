@@ -9,77 +9,65 @@
 body{
   margin:0;
   font-family: "Hiragino Mincho ProN", serif;
-  background:#f5f1e8;
-  color:#333;
+  background: linear-gradient(to bottom,#f5f1e8,#e8dfcf);
   text-align:center;
-}
-
-.container{
-  padding:40px 20px;
-  max-width:500px;
-  margin:auto;
+  color:#222;
 }
 
 h1{
-  font-size:20px;
-  font-weight:normal;
-  letter-spacing:2px;
+  margin-top:30px;
+  font-size:26px;
+  letter-spacing:3px;
 }
 
-/* ===== コンパス ===== */
+.card{
+  background:white;
+  margin:20px auto;
+  padding:20px;
+  width:90%;
+  max-width:420px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
 
-#compassWrap{
-  display:flex;
-  justify-content:center;
-  margin:40px 0;
+.big{
+  font-size:22px;
+  margin:10px 0;
+}
+
+.highlight{
+  color:#b30000;
+  font-weight:bold;
 }
 
 #compassCircle{
-  width:220px;
-  height:220px;
+  width:180px;
+  height:180px;
   border-radius:50%;
+  margin:30px auto;
   position:relative;
-  background:
-    radial-gradient(circle at 30% 30%, #ffffff 0%, #f1f1f1 40%, #dcdcdc 100%);
-  border:6px solid #333;
-  box-shadow:
-    inset 0 0 20px rgba(0,0,0,0.2),
-    0 12px 30px rgba(0,0,0,0.25);
+  background: radial-gradient(circle,#fff 55%,#ddd 100%);
+  border:6px solid #c9a646;
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* 方位 */
-.direction{
-  position:absolute;
-  font-weight:bold;
-  font-size:18px;
-  color:#333;
-}
-
-.north{ top:12px; left:50%; transform:translateX(-50%); }
-.south{ bottom:12px; left:50%; transform:translateX(-50%); }
-.east{ right:12px; top:50%; transform:translateY(-50%); }
-.west{ left:12px; top:50%; transform:translateY(-50%); }
-
-/* 針 */
 #needle{
   width:4px;
-  height:95px;
-  background:linear-gradient(to top, #8b0000, #ff4444);
+  height:80px;
+  background:#b30000;
   position:absolute;
-  bottom:50%;
+  top:50%;
   left:50%;
-  transform-origin:bottom center;
-  transform:translateX(-50%) rotate(0deg);
-  border-radius:3px;
-  transition:transform 1s ease;
-  box-shadow:0 0 12px rgba(178,34,34,0.6);
+  transform-origin:50% 100%;
+  transform:translate(-50%,-100%) rotate(0deg);
+  border-radius:2px;
+  transition:transform 2.5s cubic-bezier(.25,1.5,.5,1);
 }
 
-/* 中心 */
 #centerDot{
-  width:16px;
-  height:16px;
-  background:#222;
+  width:14px;
+  height:14px;
+  background:#111;
   border-radius:50%;
   position:absolute;
   top:50%;
@@ -87,72 +75,147 @@ h1{
   transform:translate(-50%,-50%);
 }
 
-/* 表示テキスト */
-.direction-text{
-  font-size:20px;
+button{
+  padding:12px 24px;
+  font-size:16px;
+  border:none;
+  border-radius:30px;
+  background:#111;
+  color:white;
+  cursor:pointer;
   margin-top:15px;
-  font-weight:bold;
+}
+
+button:hover{
+  opacity:0.8;
+}
+
+footer{
+  margin:40px 0 20px;
+  font-size:12px;
+  opacity:0.6;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
 <h1>結 - 開運暦</h1>
 
-<div id="compassWrap">
-  <div id="compassCircle">
-    <div class="direction north">N</div>
-    <div class="direction east">E</div>
-    <div class="direction south">S</div>
-    <div class="direction west">W</div>
-
-    <div id="needle"></div>
-    <div id="centerDot"></div>
-  </div>
+<div class="card">
+  <div id="todayDate" class="big"></div>
+  <div id="rokuyo" class="big"></div>
+  <div id="moon" class="big"></div>
+  <div id="luckyDay" class="big highlight"></div>
 </div>
 
-<div class="direction-text" id="directionText"></div>
-
+<div id="compassCircle">
+  <div id="needle"></div>
+  <div id="centerDot"></div>
 </div>
+
+<button onclick="spinCompass()">運命を回す</button>
+
+<div class="card">
+  <h3>📅 今月の天赦日</h3>
+  <div id="monthlyLucky"></div>
+</div>
+
+<footer>
+© 結 - 開運暦
+</footer>
 
 <script>
-// ===== 吉方位ロジック =====
-function getLuckyDirection(date){
-  const directions = [
-    { name:"北", deg:0 },
-    { name:"北東", deg:45 },
-    { name:"東", deg:90 },
-    { name:"南東", deg:135 },
-    { name:"南", deg:180 },
-    { name:"南西", deg:225 },
-    { name:"西", deg:270 },
-    { name:"北西", deg:315 }
-  ];
+// ===== 今日の日付 =====
+const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth()+1).padStart(2,'0');
+const dd = String(today.getDate()).padStart(2,'0');
+const todayStr = `${yyyy}-${mm}-${dd}`;
 
-  return directions[date.getDate() % 8];
+document.getElementById("todayDate").innerText =
+`${yyyy}年 ${mm}月 ${dd}日`;
+
+
+// ===== 六曜 =====
+const rokuyoList=["先勝","友引","先負","仏滅","大安","赤口"];
+const base=new Date(2025,0,1);
+const diff=Math.floor((today-base)/(1000*60*60*24));
+const rokuyo=rokuyoList[(diff%6+6)%6];
+document.getElementById("rokuyo").innerText="六曜："+rokuyo;
+
+
+// ===== 天赦日データ（5年分）=====
+const tenshaDays=[
+"2026-01-06","2026-03-21","2026-06-05","2026-08-07","2026-10-06","2026-12-21",
+"2027-01-05","2027-03-20","2027-06-04","2027-08-07","2027-10-05","2027-12-20",
+"2028-01-05","2028-03-19","2028-06-03","2028-08-06","2028-10-04","2028-12-19",
+"2029-01-04","2029-03-19","2029-06-02","2029-08-06","2029-10-03","2029-12-18",
+"2030-01-03","2030-03-18","2030-06-01","2030-08-05","2030-10-02","2030-12-17"
+];
+
+
+// ===== 吉日判定 =====
+let luckyText="通常日";
+
+if(rokuyo==="大安"){
+  luckyText="🌸 大安吉日";
 }
 
-// ===== 実行 =====
-window.onload = function(){
+if(tenshaDays.includes(todayStr)){
+  luckyText="👑✨ 天赦日（最強開運日）✨";
+}
 
-  const today = new Date();
-  const lucky = getLuckyDirection(today);
+document.getElementById("luckyDay").innerText=luckyText;
 
-  const needle = document.getElementById("needle");
-  const text = document.getElementById("directionText");
 
-  if(needle){
-    needle.style.transform =
-      "translateX(-50%) rotate(" + lucky.deg + "deg)";
-  }
+// ===== 月齢 =====
+function getMoonAge(date){
+  const base=new Date(2025,0,29);
+  const diff=(date-base)/(1000*60*60*24);
+  return (diff%29.53+29.53)%29.53;
+}
 
-  if(text){
-    text.innerText = "本日の吉方位： " + lucky.name;
-  }
-};
+const moonAge=getMoonAge(today);
+let moonText="";
+
+if(moonAge<1){
+  moonText="🌑 新月";
+}else if(Math.abs(moonAge-14.7)<1){
+  moonText="🌕 満月";
+}else{
+  moonText="🌙 月齢 "+moonAge.toFixed(1);
+}
+
+document.getElementById("moon").innerText=moonText;
+
+
+// ===== コンパス =====
+let angle=0;
+function spinCompass(){
+  const needle=document.getElementById("needle");
+  angle+=720+Math.random()*360;
+  needle.style.transform=
+    `translate(-50%,-100%) rotate(${angle}deg)`;
+}
+
+
+// ===== 今月の天赦日 =====
+function showMonthlyTensha(){
+  const list=document.getElementById("monthlyLucky");
+  list.innerHTML="";う
+  const thisMonth=yyyy+"-"+mm;
+
+  tenshaDays.forEach(day=>{
+    if(day.startsWith(thisMonth)){
+      const div=document.createElement("div");
+      div.innerText="👑 "+day;
+      list.appendChild(div);
+    }
+  });
+}
+
+showMonthlyTensha();
 </script>
 
 </body>
