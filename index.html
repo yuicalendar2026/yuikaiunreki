@@ -374,6 +374,36 @@ if(lunationEl){
     lunationEl.innerText = "次の大きな月相をお待ちください";
   }
 }
+  // ===== 方位自動回転 =====
+function getLuckyDirection(date){
+  const d = date.getDate();
+
+  const directions = [
+    { name: "北", deg: 0 },
+    { name: "北東", deg: 45 },
+    { name: "東", deg: 90 },
+    { name: "南東", deg: 135 },
+    { name: "南", deg: 180 },
+    { name: "南西", deg: 225 },
+    { name: "西", deg: 270 },
+    { name: "北西", deg: 315 }
+  ];
+
+  return directions[d % 8];
+}
+
+const compassEl = document.getElementById("compass");
+const luckyDir = getLuckyDirection(today);
+
+if(compassEl){
+  compassEl.style.transform = `rotate(${luckyDir.deg}deg)`;
+}
+
+// 表示テキストも更新
+const directionText = document.querySelector(".section .small");
+if(directionText){
+  directionText.innerText = luckyDir.name;
+}
 </script>
 
 </body>
