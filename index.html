@@ -464,5 +464,25 @@ setTimeout(() => {
   rotateCompass(180);
 }, 1000);
 </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const needle = document.getElementById("needle");
+
+  if(!needle){
+    console.log("needleが見つかりません");
+    return;
+  }
+
+  // 今日の日付で自動計算（超シンプル版）
+  const today = new Date();
+  const directions = [0, 90, 180, 270]; 
+  const deg = directions[today.getDate() % 4];
+
+  needle.style.transform =
+    "translateX(-50%) rotate(" + deg + "deg)";
+
+});
+</script>
 </body>
 </html>
