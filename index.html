@@ -130,7 +130,6 @@ h1{
 </div>
 
 </div>
-
 <script>
 // 今日の日付
 const today = new Date();
@@ -163,21 +162,23 @@ function calculateRokuyo(date){
   return rokuyoNames[(oldMonth + oldDay) % 6];
 }
 
-document.getElementById("rokuyo").innerText =
-  `六曜：${calculateRokuyo(today)}`;
-
-// ===== 旧暦表示 =====
-document.getElementById("lunar").innerText =
-  `旧暦 ${getOldLunarMonth(today)}月${getOldLunarDay(today)}日`;
-
-// ===== 今日の日付 =====
+// ===== 日付表示 =====
 const year = today.getFullYear();
 const month = today.getMonth() + 1;
 const day = today.getDate();
 
-document.getElementById("date").innerText =
-  `${year}年 ${month}月 ${day}日`;
-// ===== 月齢ビジュアル化 =====
+const dateEl = document.getElementById("date");
+if(dateEl){
+  dateEl.innerText = `${year}年 ${month}月 ${day}日`;
+}
+
+// ===== 六曜表示 =====
+const rokuyoEl = document.getElementById("rokuyo");
+if(rokuyoEl){
+  rokuyoEl.innerText = `六曜：${calculateRokuyo(today)}`;
+}
+
+// ===== 月齢ビジュアル =====
 function getMoonPhaseIcon(age){
   if(age < 1) return "🌑 新月";
   if(age < 7) return "🌒 上弦前";
@@ -191,10 +192,20 @@ function getMoonPhaseIcon(age){
 
 const moonAge = getMoonAge(today);
 
-document.getElementById("moon").innerText =
-  `${getMoonPhaseIcon(moonAge)}（月齢 ${moonAge.toFixed(1)}）`;
+const moonEl = document.getElementById("moon");
+if(moonEl){
+  moonEl.innerText =
+    `${getMoonPhaseIcon(moonAge)}（月齢 ${moonAge.toFixed(1)}）`;
+}
 
-  // ===== 二十四節気（実用近似） =====
+// ===== 旧暦表示（安全設計） =====
+const lunarEl = document.getElementById("lunar");
+if(lunarEl){
+  lunarEl.innerText =
+    `旧暦 ${getOldLunarMonth(today)}月${getOldLunarDay(today)}日`;
+}
+
+// ===== 二十四節気（近似） =====
 function getSekki(date){
   const year = date.getFullYear();
 
@@ -227,8 +238,7 @@ function getSekki(date){
 
   let latest = sekkiDates[0].name;
 
-  for(let i=0;i<sekkiDates.length;i++){
-    const s = sekkiDates[i];
+  for(let s of sekkiDates){
     const d = new Date(year, s.month-1, s.day);
     if(date >= d){
       latest = s.name;
@@ -237,10 +247,63 @@ function getSekki(date){
 
   return latest;
 }
+
+const seasonEl = document.getElementById("season");
+if(seasonEl){
+  seasonEl.innerText =
+    `現在の節気：${getSekki(today)}`;
+}
+// ===== 吉日判定（簡易版サンプル） =====
+function getGoodDayText(date){
+  const d = date.getDate();
+  let result = [];
+
+  // 仮ルール（例）
+  if(d % 7 === 0) result.push("一粒万倍日");
+  if(d === 1) result.push("天赦日");
+  if(d % 9 === 0) result.push("大安吉日");
+
+  if(result.length === 0){
+    return "特別な吉日はありません";
+  }
+
+  return result.join("・");
 }
 
-document.getElementById("season").innerText =
-  `現在の節気：${getSekki(today)}`;
+const gooddayEl = document.getElementById("goodday");
+if(gooddayEl){
+  gooddayEl.innerText = getGoodDayText(today);
+}
+
+// ===== 今月の吉日一覧生成 =====
+const monthListEl = document.getElementById("monthList");
+if(monthListEl){
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  for(let i=1;i<=daysInMonth;i++){
+    const d = new Date(year, month-1, i);
+    const text = getGoodDayText(d);
+
+    if(text !== "特別な吉日はありません"){
+      const card = document.createElement("div");
+      card.className = "day-card highlight";
+      card.innerText = `${i}日\n${text}`;
+      monthListEl.appendChild(card);
+    }
+  }
+}
+
+// ===== 新月・満月表示 =====
+const lunationEl = document.getElementById("lunation");
+if(lunationEl){
+  if(moonAge < 1){
+    lunationEl.innerText = "本日は新月です 🌑";
+  } else if(moonAge > 14 && moonAge < 16){
+    lunationEl.innerText = "本日は満月です 🌕";
+  } else {
+    lunationEl.innerText = "次の大きな月相をお待ちください";
+  }
+}
 </script>
 
 </body>
