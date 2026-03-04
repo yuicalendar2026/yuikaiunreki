@@ -395,7 +395,7 @@ function getLuckyDirection(date){
   return directions[d % 8];
 }
 
-const compassEl = document.getElementById("compass");
+const compassEl = document.getElementById("needle");
 const luckyDir = getLuckyDirection(today);
 
 if(compassEl){
