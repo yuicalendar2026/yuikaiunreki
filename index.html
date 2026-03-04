@@ -10,7 +10,6 @@ body{
   margin:0;
   font-family:"Hiragino Mincho ProN", serif;
   background:#f5f1e8;
-  color:#333;
   text-align:center;
 }
 
@@ -18,6 +17,17 @@ header{
   padding:20px 0 10px;
   font-size:20px;
   letter-spacing:3px;
+}
+
+.kyusei-box{
+  margin:10px auto;
+  padding:10px;
+  background:white;
+  width:90%;
+  max-width:400px;
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  font-size:14px;
 }
 
 .calendar-header{
@@ -31,12 +41,8 @@ header{
 button{
   background:none;
   border:none;
-  font-size:20px;
-  cursor:pointer;
-}
-
-#monthTitle{
   font-size:18px;
+  cursor:pointer;
 }
 
 .calendar{
@@ -48,43 +54,42 @@ button{
 
 .day{
   background:white;
-  padding:6px 2px;
+  padding:5px 2px;
   border-radius:12px;
   box-shadow:0 2px 6px rgba(0,0,0,0.05);
-  font-size:13px;
-  min-height:75px;
+  font-size:12px;
+  min-height:100px;
   display:flex;
   flex-direction:column;
   align-items:center;
+  position:relative;
 }
 
-.today{
-  border:2px solid #b22222;
+.today{ border:2px solid #b22222; }
+
+.week{ font-size:12px; opacity:0.6; }
+
+.rokuyo{ font-size:10px; }
+
+.moon{ font-size:14px; }
+
+.lucky{
+  font-size:9px;
+  color:#b22222;
 }
 
-.week{
-  font-size:12px;
-  opacity:0.6;
-  padding-bottom:5px;
+.sekki{
+  font-size:9px;
+  color:#006400;
 }
 
-.rokuyo{
-  font-size:10px;
-  margin-top:2px;
-}
-
-.moon{
-  font-size:14px;
-}
-
-.fullmoon{
-  background:#fff4c2;
-  border:2px solid gold;
-}
-
-.newmoon{
-  background:#222;
-  color:white;
+.memo-dot{
+  width:6px;
+  height:6px;
+  background:#b22222;
+  border-radius:50%;
+  position:absolute;
+  bottom:5px;
 }
 </style>
 </head>
@@ -92,6 +97,12 @@ button{
 <body>
 
 <header>結 - 開運暦</header>
+
+<div class="kyusei-box">
+  生年月日：
+  <input type="date" id="birthInput">
+  <div id="kyuseiResult"></div>
+</div>
 
 <div class="calendar-header">
   <button onclick="changeMonth(-1)">‹</button>
@@ -102,115 +113,144 @@ button{
 <div class="calendar" id="calendar"></div>
 
 <script>
-let currentDate = new Date();
-let touchStartX = 0;
-let touchEndX = 0;
 
-const rokuyoList = ["先勝","友引","先負","仏滅","大安","赤口"];
+/* ===============================
+   🔮 固定データ（2024-2028）
+================================ */
 
-function getRokuyo(year,month,day){
-  return rokuyoList[(year + month + day) % 6];
+// 天赦日（主要日）
+const tensha = [
+"2024-01-01","2024-03-15","2024-05-30","2024-08-12","2024-10-24","2024-12-26",
+"2025-03-10","2025-05-25","2025-07-24","2025-10-06","2025-12-21",
+"2026-02-08","2026-04-23","2026-07-05","2026-09-20","2026-11-04",
+"2027-01-16","2027-03-31","2027-06-12","2027-08-27","2027-11-09",
+"2028-01-21","2028-04-04","2028-06-16","2028-09-01","2028-11-14"
+];
+
+// 一粒万倍日（簡略代表日）
+const ichiryumanbai = [
+"2025-01-03","2025-01-06","2025-01-09","2025-01-12",
+"2025-02-05","2025-02-08","2025-02-11","2025-02-14",
+"2025-03-01","2025-03-04","2025-03-07"
+];
+
+// 二十四節気（主要）
+const sekki = {
+"2025-02-03":"立春",
+"2025-03-20":"春分",
+"2025-06-21":"夏至",
+"2025-09-23":"秋分",
+"2025-12-21":"冬至"
+};
+
+/* =============================== */
+
+let currentDate=new Date();
+let memos=JSON.parse(localStorage.getItem("memos")||"{}");
+
+const rokuyoList=["先勝","友引","先負","仏滅","大安","赤口"];
+const stars=["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"];
+
+document.getElementById("birthInput").value=localStorage.getItem("birth")||"";
+if(localStorage.getItem("birth")) calculateKyusei();
+
+birthInput.addEventListener("change",()=>{
+  localStorage.setItem("birth",birthInput.value);
+  calculateKyusei();
+});
+
+function calculateKyusei(){
+  const birth=new Date(birthInput.value);
+  let year=birth.getFullYear();
+  if(birth.getMonth()<1||(birth.getMonth()==1&&birth.getDate()<4)) year-=1;
+  let num=(11-(year%9));
+  if(num<=0) num+=9;
+  kyuseiResult.innerText="あなたの本命星："+stars[num-1];
+}
+
+function getRokuyo(y,m,d){
+  return rokuyoList[(y+m+d)%6];
 }
 
 function getMoonAge(date){
-  const base = new Date(2000,0,6,18,14);
-  const diff = date - base;
-  const days = diff / (1000*60*60*24);
-  return (days % 29.53);
+  const base=new Date(2000,0,6,18,14);
+  return ((date-base)/(1000*60*60*24))%29.53;
 }
 
 function getMoonIcon(age){
-  if(age < 1) return "🌑";
-  if(age < 7) return "🌒";
-  if(age < 14) return "🌓";
-  if(age < 15) return "🌕";
-  if(age < 22) return "🌖";
-  return "🌘";
+  if(age<1)return"🌑";
+  if(age<7)return"🌒";
+  if(age<14)return"🌓";
+  if(age<15)return"🌕";
+  if(age<22)return"🌖";
+  return"🌘";
+}
+
+function formatDate(y,m,d){
+  return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
 }
 
 function renderCalendar(){
-  const calendar = document.getElementById("calendar");
-  calendar.innerHTML = "";
+  const cal=document.getElementById("calendar");
+  cal.innerHTML="";
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
+  const y=currentDate.getFullYear();
+  const m=currentDate.getMonth();
 
-  document.getElementById("monthTitle").innerText =
-    year + "年 " + (month+1) + "月";
+  monthTitle.innerText=y+"年 "+(m+1)+"月";
 
-  const firstDay = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month+1, 0).getDate();
-  const today = new Date();
+  const first=new Date(y,m,1).getDay();
+  const last=new Date(y,m+1,0).getDate();
+  const today=new Date();
 
-  const weekDays = ["日","月","火","水","木","金","土"];
-  for(let i=0;i<7;i++){
-    const w = document.createElement("div");
-    w.className = "week";
-    w.innerText = weekDays[i];
-    calendar.appendChild(w);
-  }
+  ["日","月","火","水","木","金","土"].forEach(d=>{
+    const w=document.createElement("div");
+    w.className="week";
+    w.innerText=d;
+    cal.appendChild(w);
+  });
 
-  for(let i=0;i<firstDay;i++){
-    calendar.appendChild(document.createElement("div"));
-  }
+  for(let i=0;i<first;i++) cal.appendChild(document.createElement("div"));
 
-  for(let day=1;day<=lastDate;day++){
-    const cell = document.createElement("div");
-    cell.className = "day";
+  for(let d=1;d<=last;d++){
+    const cell=document.createElement("div");
+    cell.className="day";
 
-    const dateObj = new Date(year,month,day);
-    const moonAge = getMoonAge(dateObj);
-    const moonIcon = getMoonIcon(moonAge);
+    const dateStr=formatDate(y,m+1,d);
+    const moonAge=getMoonAge(new Date(y,m,d));
 
-    cell.innerHTML = `
-      <div>${day}</div>
-      <div class="moon">${moonIcon}</div>
-      <div class="rokuyo">${getRokuyo(year,month+1,day)}</div>
+    cell.innerHTML=`
+      <div>${d}</div>
+      <div class="moon">${getMoonIcon(moonAge)}</div>
+      <div class="rokuyo">${getRokuyo(y,m+1,d)}</div>
     `;
 
-    if(
-      day === today.getDate() &&
-      month === today.getMonth() &&
-      year === today.getFullYear()
-    ){
+    if(tensha.includes(dateStr)){
+      cell.innerHTML+=`<div class="lucky">天赦日</div>`;
+    }
+
+    if(ichiryumanbai.includes(dateStr)){
+      cell.innerHTML+=`<div class="lucky">一粒万倍日</div>`;
+    }
+
+    if(sekki[dateStr]){
+      cell.innerHTML+=`<div class="sekki">${sekki[dateStr]}</div>`;
+    }
+
+    if(d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear())
       cell.classList.add("today");
-    }
 
-    if(moonAge < 1){
-      cell.classList.add("newmoon");
-    }
-    if(moonAge > 14 && moonAge < 15){
-      cell.classList.add("fullmoon");
-    }
-
-    calendar.appendChild(cell);
+    cal.appendChild(cell);
   }
 }
 
-function changeMonth(num){
-  currentDate.setMonth(currentDate.getMonth() + num);
+function changeMonth(n){
+  currentDate.setMonth(currentDate.getMonth()+n);
   renderCalendar();
 }
 
-document.addEventListener("touchstart", e=>{
-  touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener("touchend", e=>{
-  touchEndX = e.changedTouches[0].screenX;
-  handleSwipe();
-});
-
-function handleSwipe(){
-  if(touchEndX < touchStartX - 50){
-    changeMonth(1);
-  }
-  if(touchEndX > touchStartX + 50){
-    changeMonth(-1);
-  }
-}
-
 renderCalendar();
+
 </script>
 
 </body>
