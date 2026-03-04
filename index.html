@@ -139,10 +139,17 @@ const day = today.getDate();
 document.getElementById("date").innerText =
 `${year}年 ${month}月 ${day}日`;
 
-// 六曜（超簡易ロジック）
-const rokuyoList = ["大安","赤口","先勝","友引","先負","仏滅"];
-const rokuyo = rokuyoList[(month + day) % 6];
-document.getElementById("rokuyo").innerText = `六曜：${rokuyo}`;
+// 六曜（改良版）
+const rokuyoNames = ["大安","赤口","先勝","友引","先負","仏滅"];
+
+function calculateRokuyo(date){
+  const base = new Date(1900,0,1);
+  const diff = Math.floor((date - base) / 86400000);
+  return rokuyoNames[diff % 6];
+}
+
+document.getElementById("rokuyo").innerText =
+`六曜：${calculateRokuyo(today)}`;
 
 // 数秘
 function numerologyCalc(y,m,d){
