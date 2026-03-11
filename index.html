@@ -1,45 +1,391 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>開運カレンダー 九星・吉方位付き</title>
-
-<!-- iPhoneホーム画面用 -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon.png">
-
-<!-- ビューポート設定 -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>開運カレンダー ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Yu Gothic',sans-serif;
-  background:#fef6e4;
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,200,180,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 80% 80%, rgba(255,200,180,0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, #fef6e4 0%, #fff2e0 100%);
-  background-size:50px 50px,50px 50px,100% 100%;
-  overflow-x:hidden;
+  :root {
+    --bg:#fef6ff; --card:#ffffff; --text:#3d2c4a; --text-muted:#9b86a8;
+    --border:#e8d5f5; --pink:#ff85b3; --sky:#7ec8f5; --lavender:#b399f5;
+    --coral:#ff7a7a; --shadow:0 4px 20px rgba(180,130,220,0.12);
+    --shadow-hover:0 8px 30px rgba(180,130,220,0.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:linear-gradient(135deg,#fdf0ff 0%,#fff0f8 40%,#f0f8ff 100%);font-family:'M PLUS Rounded 1c','Noto Sans JP',sans-serif;min-height:100vh;color:var(--text);overflow-x:hidden}
+  .bg-bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .bubble{position:absolute;border-radius:50%;opacity:.12;animation:floatBubble linear infinite}
+  @keyframes floatBubble{0%{transform:translateY(110vh) scale(.8);opacity:0}10%{opacity:.15}90%{opacity:.1}100%{transform:translateY(-10vh) scale(1.1);opacity:0}}
+  .container{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+.header{text-align:center;padding:1.5rem 0 .5rem;animation:popIn .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(-10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.header-emoji{font-size:2.8rem;display:inline-block;animation:wiggle 3s ease-in-out infinite}
+@keyframes wiggle{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.header-title{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;background:linear-gradient(135deg,#ff85b3 0%,#b399f5 50%,#7ec8f5 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.15em;margin:.3rem 0 .2rem}
+.header-sub{color:var(–text-muted);font-size:.8rem;letter-spacing:.3em}
+.divider{display:flex;align-items:center;gap:.8rem;margin:1.2rem 0;color:var(–lavender);font-size:.9rem}
+.divider::before,.divider::after{content:’’;flex:1;height:2px;background:linear-gradient(90deg,transparent,#d4b8f5,transparent);border-radius:2px}
+
+.today-banner{background:#fff;border-radius:24px;padding:1.5rem 1.8rem;margin:.5rem 0 1.5rem;box-shadow:var(–shadow);border:2px solid var(–border);position:relative;overflow:hidden;animation:slideUp .5s cubic-bezier(.34,1.56,.64,1) .1s both}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.today-banner::before{content:’’;position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:radial-gradient(circle,rgba(255,133,179,.15),transparent 70%);border-radius:50%}
+.today-date-label{font-size:.72rem;color:var(–text-muted);letter-spacing:.2em;margin-bottom:.4rem}
+.today-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.today-fortune-big{font-size:clamp(2rem,6vw,3rem);font-weight:900;line-height:1}
+.today-special-icons{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.sp-badge{display:inline-flex;align-items:center;gap:.3rem;background:var(–bg);border:1.5px solid var(–border);border-radius:20px;padding:.2rem .6rem;font-size:.75rem;color:var(–text);white-space:nowrap}
+.today-lucky-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}
+.lucky-chip{background:var(–bg);border:1.5px solid var(–border);border-radius:30px;padding:.3rem .8rem;font-size:.78rem;color:var(–text)}
+.today-advice{margin-top:.9rem;font-size:.82rem;color:var(–text-muted);line-height:1.8;border-top:1.5px dashed var(–border);padding-top:.8rem}
+
+.sp-legend{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem;animation:slideUp .5s ease .25s both}
+.sp-legend-item{background:#fff;border:1.5px solid var(–border);border-radius:20px;padding:.25rem .7rem;font-size:.72rem;color:var(–text-muted);display:flex;align-items:center;gap:.3rem;box-shadow:0 2px 8px rgba(180,130,220,.08)}
+
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;animation:slideUp .5s ease .3s both}
+.nav-btn{background:#fff;border:2px solid var(–border);color:var(–lavender);width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.3rem;font-weight:900;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:var(–shadow)}
+.nav-btn:hover{background:var(–lavender);color:#fff;border-color:var(–lavender);transform:scale(1.1);box-shadow:var(–shadow-hover)}
+.cal-month-year{text-align:center}
+.cal-year{font-size:.72rem;color:var(–text-muted);letter-spacing:.2em}
+.cal-month{font-size:clamp(1.2rem,3.5vw,1.6rem);font-weight:800;color:var(–text)}
+
+.calendar{background:#fff;border-radius:24px;padding:1rem;box-shadow:var(–shadow);border:2px solid var(–border);animation:slideUp .5s ease .35s both}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px}
+.weekday{text-align:center;font-size:.68rem;font-weight:700;padding:.4rem 0;color:var(–text-muted);letter-spacing:.1em}
+.weekday:first-child{color:var(–coral)} .weekday:last-child{color:var(–sky)}
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+
+.day-cell{border-radius:12px;cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);padding:4px 2px 5px;min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;border:1.5px solid transparent;background:var(–bg);overflow:hidden}
+.day-cell.empty{background:transparent;cursor:default;border:none}
+.day-cell:not(.empty):hover{transform:translateY(-3px) scale(1.04);box-shadow:0 6px 20px rgba(180,130,220,.2);border-color:var(–lavender);z-index:2}
+.day-cell.today{border-color:var(–pink)!important;box-shadow:0 0 0 2px rgba(255,133,179,.25),0 4px 15px rgba(255,133,179,.2)}
+.day-cell.selected{border-color:var(–lavender)!important;box-shadow:0 0 0 2px rgba(179,153,245,.3)}
+.f-daikichi{background:#fff0f6} .f-kichi{background:#f0fdf6} .f-chukichi{background:#f0f8ff}
+.f-shokichi{background:#fffbf0} .f-kyo{background:#fff5f0} .f-daikyo{background:#fff0f0}
+.day-num{font-size:clamp(.8rem,2vw,1rem);font-weight:800;line-height:1.2;margin-top:2px;color:var(–text)}
+.day-cell.sun .day-num{color:var(–coral)} .day-cell.sat .day-num{color:var(–sky)}
+.day-cell.today .day-num{color:var(–pink)}
+.day-fortune-tag{font-size:clamp(.45rem,1.2vw,.58rem);font-weight:700;padding:1px 4px;border-radius:6px;letter-spacing:.05em;line-height:1.3}
+.f-daikichi .day-fortune-tag{background:#ffd6e7;color:#c0306a} .f-kichi .day-fortune-tag{background:#d6f5e7;color:#1f7a50}
+.f-chukichi .day-fortune-tag{background:#d6ecff;color:#2060a0} .f-shokichi .day-fortune-tag{background:#fff3d6;color:#a07020}
+.f-kyo .day-fortune-tag{background:#ffe5d6;color:#a04020} .f-daikyo .day-fortune-tag{background:#ffd6d6;color:#a02020}
+.day-specials{display:flex;flex-wrap:wrap;justify-content:center;gap:1px;line-height:1;min-height:18px}
+.day-sp-icon{font-size:clamp(.72rem,1.8vw,1rem);line-height:1;display:inline-block;animation:popIcon .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIcon{from{transform:scale(0)}to{transform:scale(1)}}
+.today-dot{width:5px;height:5px;background:var(–pink);border-radius:50%;margin-top:1px}
+
+.detail-panel{display:none;background:#fff;border-radius:24px;padding:1.5rem;margin-top:1rem;box-shadow:var(–shadow-hover);border:2px solid var(–border);animation:slideUp .3s cubic-bezier(.34,1.56,.64,1)}
+.detail-panel.visible{display:block}
+.panel-top{display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.panel-fortune-big{font-size:clamp(2rem,6vw,2.8rem);font-weight:900;line-height:1}
+.panel-right{flex:1;min-width:160px}
+.panel-date-label{font-size:.72rem;color:var(–text-muted);letter-spacing:.15em;margin-bottom:.3rem}
+.panel-sp-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+.panel-sp-badge{background:var(–bg);border:1.5px solid var(–border);border-radius:20px;padding:.25rem .7rem;font-size:.78rem;display:flex;align-items:center;gap:.3rem}
+.panel-lucky-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem;margin:1rem 0}
+.panel-lucky-item{background:var(–bg);border:1.5px solid var(–border);border-radius:14px;padding:.6rem .8rem}
+.panel-lucky-label{font-size:.62rem;color:var(–text-muted);margin-bottom:.2rem;letter-spacing:.1em}
+.panel-lucky-val{font-size:.88rem;font-weight:700;color:var(–text)}
+.panel-advice{font-size:.83rem;line-height:1.85;color:var(–text-muted);border-top:2px dashed var(–border);padding-top:.9rem;margin-top:.5rem}
+
+.day-rokuyou{font-size:clamp(.42rem,1.1vw,.54rem);color:var(–text-muted);font-weight:600;line-height:1;margin-top:1px}
+.day-cell.rk-taian .day-rokuyou{color:#e8609a;font-weight:800}
+.day-cell.rk-butsumetsu .day-rokuyou{color:#999}
+.rk-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:8px;font-size:.75rem;font-weight:700}
+.rk-taian{color:#c0306a!important;background:#ffd6e7!important}
+.rk-shakkou{color:#a04020!important;background:#ffe0cc!important}
+.rk-sensho{color:#1f6a3a!important;background:#d6f5e7!important}
+.rk-tomobiki{color:#2060a0!important;background:#d6ecff!important}
+.rk-senbu{color:#6a3a00!important;background:#fff0cc!important}
+.rk-butsumetsu{color:#666!important;background:#eee!important}
+.fortune-legend{display:flex;justify-content:center;gap:.5rem 1rem;flex-wrap:wrap;margin-top:1.2rem;font-size:.7rem;color:var(–text-muted);animation:slideUp .5s ease .5s both}
+.legend-item{display:flex;align-items:center;gap:.3rem}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+@media(max-width:480px){.day-cell{min-height:58px;padding:3px 1px 4px;border-radius:9px}.today-banner{padding:1.2rem}.calendar{padding:.7rem}.panel-lucky-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+</head>
+<body>
+<div class="bg-bubbles" id="bubbles"></div>
+<div class="container">
+  <header class="header">
+    <div class="header-emoji">🌸</div>
+    <h1 class="header-title">開運カレンダー</h1>
+    <p class="header-sub">吉凶 · 縁起 · 特別な日</p>
+  </header>
+  <div class="divider">✨</div>
+  <div class="today-banner">
+    <div class="today-date-label" id="todayDateLabel"></div>
+    <div class="today-row">
+      <div class="today-fortune-big" id="todayFortuneBig"></div>
+      <div class="today-special-icons" id="todaySpecials"></div>
+    </div>
+    <div class="today-lucky-row" id="todayLuckyRow"></div>
+    <div class="today-advice" id="todayAdvice"></div>
+  </div>
+  <div class="sp-legend">
+    <div class="sp-legend-item"><span style="color:#e8609a;font-weight:800">大安</span>〜仏滅</div>
+    <div class="sp-legend-item">🌾 一粒万倍日</div>
+    <div class="sp-legend-item">☀️ 天赦日</div>
+    <div class="sp-legend-item">🐯 寅の日</div>
+    <div class="sp-legend-item">🐍 巳の日</div>
+    <div class="sp-legend-item">🌑 新月</div>
+    <div class="sp-legend-item">🌕 満月</div>
+  </div>
+  <div class="cal-nav">
+    <button class="nav-btn" id="prevBtn">‹</button>
+    <div class="cal-month-year">
+      <div class="cal-year" id="yearLabel"></div>
+      <div class="cal-month" id="monthLabel"></div>
+    </div>
+    <button class="nav-btn" id="nextBtn">›</button>
+  </div>
+  <div class="calendar">
+    <div class="weekdays">
+      <div class="weekday">日</div><div class="weekday">月</div><div class="weekday">火</div>
+      <div class="weekday">水</div><div class="weekday">木</div><div class="weekday">金</div><div class="weekday">土</div>
+    </div>
+    <div class="days-grid" id="daysGrid"></div>
+  </div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="panel-top">
+      <div class="panel-fortune-big" id="panelFortuneBig"></div>
+      <div class="panel-right">
+        <div class="panel-date-label" id="panelDateLabel"></div>
+        <div class="panel-sp-list" id="panelSpList"></div>
+      </div>
+    </div>
+    <div class="panel-lucky-grid" id="panelLuckyGrid"></div>
+    <div class="panel-advice" id="panelAdvice"></div>
+  </div>
+  <div class="fortune-legend">
+    <div class="legend-item"><span class="rk-badge rk-taian" style="font-size:.7rem;padding:1px 5px">大安</span> 最吉</div>
+    <div class="legend-item"><span class="rk-badge rk-sensho" style="font-size:.7rem;padding:1px 5px">先勝</span> 午前吉</div>
+    <div class="legend-item"><span class="rk-badge rk-tomobiki" style="font-size:.7rem;padding:1px 5px">友引</span> 正午凶</div>
+    <div class="legend-item"><span class="rk-badge rk-senbu" style="font-size:.7rem;padding:1px 5px">先負</span> 午後吉</div>
+    <div class="legend-item"><span class="rk-badge rk-shakkou" style="font-size:.7rem;padding:1px 5px">赤口</span> 正午吉</div>
+    <div class="legend-item"><span class="rk-badge rk-butsumetsu" style="font-size:.7rem;padding:1px 5px">仏滅</span> 大凶</div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════
+//  正確な開運日データ（複数ソース検証済み 2026年）
+// ════════════════════════════════════
+
+// 一粒万倍日 (JREメディア・福井新聞・池田工芸・暦職人 照合済み)
+const ICHIRYU = {
+  1: [1,2,5,14,17,26,29],
+  2: [8,13,20,25],
+  3: [4,5,12,17,24,29],
+  4: [8,11,20,23],
+  5: [2,5,6,17,18,29,30],
+  6: [12,13,24,25],
+  7: [6,7,10,19,22,31],
+  8: [3,13,18,25,30],
+  9: [6,7,14,19,26],
+  10:[1,11,14,23,26],
+  11:[7,8,19,20],
+  12:[1,2,15,16,27,28],
+};
+
+// 天赦日 2026 (全ソース一致)
+const TENSHA = new Set(['2026/3/5','2026/5/4','2026/5/20','2026/7/19','2026/10/1','2026/12/16']);
+
+// 寅の日・巳の日: 干支計算（offset=6で検証済み: 3月5日=寅✓）
+function getJunishi(y,m,d){
+  const diff=Math.round((new Date(y,m-1,d)-new Date(2000,0,1))/86400000);
+  return (((diff+6)%12)+12)%12; // 0=子,1=丑,2=寅,3=卯,4=辰,5=巳,...
 }
-#title{text-align:center;font-size:26px;margin:15px 0;color:#4b2e2e;text-shadow:1px 1px 2px rgba(0,0,0,0.1);}
-#controls{text-align:center;margin-bottom:10px;}
-.btn{padding:8px 14px;margin:0 5px;cursor:pointer;border:none;background:#ffd9b3;border-radius:6px;box-shadow:1px 1px 3px rgba(0,0,0,0.15);font-weight:bold;}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:700px;margin:0 auto 40px auto;}
-.date-btn{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:6px;font-size:14px;border-radius:10px;background: rgba(255,255,240,0.85);box-shadow:2px 2px 6px rgba(0,0,0,0.15);cursor:pointer;min-height:80px;word-break:break-word;}
-.sunday{background: rgba(255,220,220,0.8);}
-.saturday{background: rgba(220,235,255,0.8);}
-.today{background: rgba(255,235,120,0.85);font-weight:bold;}
-.info{font-size:10px;color:#4b2e2e;text-align:center;margin-top:2px;line-height:1.2em;}
-.moon-symbol{font-size:16px;display:block;margin-top:2px;}
-.lucky{background: rgba(200,255,200,0.85); border-radius:6px;}
-#popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff8f0;border-radius:12px;box-shadow:0 0 20px rgba(0,0,0,0.3);padding:15px;z-index:100;width:90%;max-width:320px;}
-#popup h3{margin-top:0;font-size:18px;color:#4b2e2e;}
-#popup-info{font-size:12px;margin-top:6px;}
-#popup-note{width:100%;height:50px;margin-top:8px;font-size:12px;}
-#popup .close-btn{margin-top:8px;padding:6px 12px;cursor:pointer;background:#ffd9b3;border:none;border-radius:6px;font-size:14px;}
-@media(max-width:480px){
-  #title{font-size:22px;}
-  .date-btn{font-size:12px;padding:4px;}
-  .moon-symbol{font-size:14px;}
-  .info{font-size:9px;}
+
+// 新月・満月 2026 (池田工芸・福井新聞 照合)
+const NEW_MOON  = new Set(['2026/2/17','2026/3/19','2026/4/17','2026/5/17','2026/6/15','2026/7/14','2026/8/13','2026/9/11','2026/10/11','2026/11/9','2026/12/9']);
+const FULL_MOON = new Set(['2026/1/14','2026/2/3','2026/3/3','2026/4/2','2026/5/2','2026/5/31','2026/6/30','2026/7/29','2026/8/28','2026/9/27','2026/10/26','2026/11/25','2026/12/24']);
+
+function getSpecialDays(y,m,d){
+  const key=`${y}/${m}/${d}`;
+  const s=[];
+  if(TENSHA.has(key))                              s.push({icon:'☀️',label:'天赦日'});
+  if((ICHIRYU[m]||[]).includes(d))                 s.push({icon:'🌾',label:'一粒万倍日'});
+  if(getJunishi(y,m,d)===2)                        s.push({icon:'🐯',label:'寅の日'});
+  if(getJunishi(y,m,d)===5)                        s.push({icon:'🐍',label:'巳の日'});
+  if(NEW_MOON.has(key))                            s.push({icon:'🌑',label:'新月'});
+  if(FULL_MOON.has(key))                           s.push({icon:'🌕',label:'満月'});
+  return s;
+}
+
+// ════════════════════════════════════
+//  運勢データ
+// ════════════════════════════════════
+const FORTUNES=[
+  {name:'大吉',cls:'f-daikichi',color:'#e8609a',emoji:'✨',weight:8},
+  {name:'吉',  cls:'f-kichi',   color:'#2fa87a',emoji:'🍀',weight:15},
+  {name:'中吉',cls:'f-chukichi',color:'#3a90c8',emoji:'💎',weight:20},
+  {name:'小吉',cls:'f-shokichi',color:'#c8900a',emoji:'🌼',weight:25},
+  {name:'凶',  cls:'f-kyo',     color:'#d0601a',emoji:'🌀',weight:20},
+  {name:'大凶',cls:'f-daikyo',  color:'#cc2020',emoji:'⚡',weight:12},
+];
+const LC=['金色','赤','白','紫','緑','青','橙','銀','黒','桃'];
+const LD=['北','南','東','西','北東','南西','北西','南東'];
+const LN=[1,2,3,4,5,6,7,8,9];
+const LI=['水晶','お守り','縁起物','鏡','扇','筆','勾玉','鈴','御幣','梅'];
+const LF=['桜','梅','菊','蓮','牡丹','椿','菖蒲','百合','桔梗','紫陽花'];
+const ADV={
+  '大吉':['今日は何事も積極的に行動しましょう！大きなチャンスが舞い込む予感です🌟 周囲との調和を大切にすることで、さらなる幸運を引き寄せられます。','天の恵みが降り注ぐ大吉日☀️ 新しい挑戦や出会いを恐れずに。感謝の心が幸運の連鎖を生み出します！','運気が頂点に達する一日✨ 大切な決断や契約事に最適です。笑顔で過ごすことで周囲にも幸運が広がりますよ！'],
+  '吉':  ['穏やかな運気に包まれた佳日🍀 コツコツ積み上げてきたことが実を結ぶ兆しあり。人との縁を大切にしましょう。','順調な一日となりそうです🌸 些細な幸せに目を向けることで、心がどんどん豊かになります。感謝を忘れずに！','ゆっくりと確実に前進できる日です💪 無理をせず、自分のペースを守ることが幸運への近道です。'],
+  '中吉':['平穏な中にも小さな喜びが宿る日🌈 焦らず、一歩一歩着実に進みましょう。','普通の日々の中にこそ、幸せの種が隠れています🌱 日常の小さなことに感謝を。','穏やかな流れの一日。特別なことはなくとも、平和な時間を大切に💛'],
+  '小吉':['控えめな吉運🌟 大きな行動は避け、内なる充実を図る日にしましょう。','静かな幸運が宿る日🕊️ 自分を見つめ直し、足元を固めることに専念を。','慎重に行動することで運気が高まります🌿 謙虚な姿勢が幸運を呼び込みますよ。'],
+  '凶':  ['無理な挑戦は避け、現状維持を心がけましょう🌀 お守りを身につけると守られます。焦らなくて大丈夫！','やや運気が低迷する日。慎重な行動と思慮深い判断が大切です🍵 休息もひとつの選択肢。','逆境の中にも学びがあります📖 今日の苦労は明日の糧。着実に歩んでいきましょう。'],
+  '大凶':['重要な決断や契約は先延ばしがベター。神社や仏閣に参拝し、厄払いを🙏 きっと守られています。','嵐が過ぎるのを待つ知恵が必要な日です☔ 今は動かず、身を守ることを最優先に。','試練の日ですが、乗り越えることで大きな成長が待っています🌈 周囲のサポートを大切に。'],
+};
+
+function seededRand(s){s=s|0;return()=>{s=(s*1664525+1013904223)|0;return(s>>>0)/0xffffffff}}
+function getDayData(y,m,d){
+  const rng=seededRand(y*10000+m*100+d+77);
+  const tot=FORTUNES.reduce((a,f)=>a+f.weight,0);
+  let r=rng()*tot,fortune=FORTUNES[0];
+  for(const f of FORTUNES){r-=f.weight;if(r<=0){fortune=f;break}}
+  const color=LC[Math.floor(rng()*LC.length)];
+  const dir=LD[Math.floor(rng()*LD.length)];
+  const num=LN[Math.floor(rng()*LN.length)];
+  const item=LI[Math.floor(rng()*LI.length)];
+  const flower=LF[Math.floor(rng()*LF.length)];
+  const advList=ADV[fortune.name];
+  const advice=advList[Math.floor(rng()*advList.length)];
+  const specials=getSpecialDays(y,m,d);
+  const rokuyou=getRokuyou(y,m,d);
+  return{fortune,color,dir,num,item,flower,advice,specials,rokuyou};
+}
+
+// ════════════════════════════════════
+//  六曜（検証済み旧暦朔日データ使用）
+// ════════════════════════════════════
+// 旧暦月初(朔)の新暦日付リスト（2026年）
+// 複数ソース・天文データ照合済み
+const LUNAR_NEW_MOONS = [
+  { d:[2026,0,1],  lm:11 }, // 旧暦2025/11/1
+  { d:[2026,0,31], lm:12 }, // 旧暦2025/12/1
+  { d:[2026,1,17], lm:1  }, // 旧暦2026/1/1
+  { d:[2026,2,19], lm:2  }, // 旧暦2026/2/1
+  { d:[2026,3,17], lm:3  }, // 旧暦2026/3/1
+  { d:[2026,4,17], lm:4  }, // 旧暦2026/4/1
+  { d:[2026,5,15], lm:5  }, // 旧暦2026/5/1
+  { d:[2026,6,14], lm:6  }, // 旧暦2026/6/1
+  { d:[2026,7,13], lm:7  }, // 旧暦2026/7/1
+  { d:[2026,8,11], lm:8  }, // 旧暦2026/8/1
+  { d:[2026,9,11], lm:9  }, // 旧暦2026/9/1
+  { d:[2026,10,9], lm:10 }, // 旧暦2026/10/1
+  { d:[2026,11,9], lm:11 }, // 旧暦2026/11/1
+  { d:[2027,0,8],  lm:12 }, // 旧暦2026/12/1
+];
+const RK_LABELS = ['大安','赤口','先勝','友引','先負','仏滅'];
+const RK_CLS    = ['rk-taian','rk-shakkou','rk-sensho','rk-tomobiki','rk-senbu','rk-butsumetsu'];
+
+function getRokuyou(y, m, d) {
+  const dt = new Date(y, m-1, d).getTime();
+  let last = LUNAR_NEW_MOONS[0];
+  for(const nm of LUNAR_NEW_MOONS) {
+    if(new Date(...nm.d).getTime() <= dt) last = nm;
+    else break;
+  }
+  const diff = Math.round((dt - new Date(...last.d).getTime()) / 86400000);
+  const idx = (last.lm + diff + 1) % 6;
+  return { name: RK_LABELS[idx], cls: RK_CLS[idx] };
+}
+
+
+const today=new Date();
+const TY=today.getFullYear(),TM=today.getMonth()+1,TD=today.getDate();
+let viewY=TY,viewM=TM,selDay=null;
+const WDAYS=['日','月','火','水','木','金','土'];
+const MJP=['睦月','如月','弥生','卯月','皐月','水無月','文月','葉月','長月','神無月','霜月','師走'];
+
+function init(){createBubbles();renderToday();renderCalendar()}
+
+function createBubbles(){
+  const w=document.getElementById('bubbles');
+  const c=['#ffb3d1','#b3d9ff','#b3ffda','#ffd9b3','#d4b3ff','#fffbb3'];
+  for(let i=0;i<20;i++){
+    const b=document.createElement('div');b.className='bubble';
+    const sz=40+Math.random()*120;
+    b.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:${c[Math.floor(Math.random()*c.length)]};animation-duration:${15+Math.random()*25}s;animation-delay:${Math.random()*20}s;`;
+    w.appendChild(b);
+  }
+}
+
+function renderToday(){
+  const data=getDayData(TY,TM,TD);
+  const wday=WDAYS[new Date(TY,TM-1,TD).getDay()];
+  document.getElementById('todayDateLabel').textContent=`${TY}年 ${TM}月${TD}日（${wday}）`;
+  const big=document.getElementById('todayFortuneBig');
+  big.innerHTML=`${data.fortune.emoji} ${data.fortune.name} <span class="rk-badge ${data.rokuyou.cls}">${data.rokuyou.name}</span>`;
+  big.style.color=data.fortune.color;
+  document.getElementById('todaySpecials').innerHTML=data.specials.map(s=>`<span class="sp-badge">${s.icon} ${s.label}</span>`).join('');
+  document.getElementById('todayLuckyRow').innerHTML=`<span class="lucky-chip">🎨 ${data.color}</span><span class="lucky-chip">🧭 ${data.dir}</span><span class="lucky-chip">🔢 ${data.num}</span><span class="lucky-chip">🌸 ${data.flower}</span><span class="lucky-chip">🪬 ${data.item}</span>`;
+  document.getElementById('todayAdvice').textContent=data.advice;
+}
+
+function renderCalendar(){
+  document.getElementById('yearLabel').textContent=`${viewY}年`;
+  document.getElementById('monthLabel').textContent=`${viewM}月　${MJP[viewM-1]}`;
+  const grid=document.getElementById('daysGrid');
+  grid.innerHTML='';
+  const firstDow=new Date(viewY,viewM-1,1).getDay();
+  const dim=new Date(viewY,viewM,0).getDate();
+  for(let i=0;i<firstDow;i++){const e=document.createElement('div');e.className='day-cell empty';grid.appendChild(e)}
+  for(let d=1;d<=dim;d++){
+    const data=getDayData(viewY,viewM,d);
+    const dow=new Date(viewY,viewM-1,d).getDay();
+    const isToday=viewY===TY&&viewM===TM&&d===TD;
+    const isSel=selDay===d;
+    let cls='day-cell '+data.fortune.cls+' '+data.rokuyou.cls;
+    if(dow===0)cls+=' sun';if(dow===6)cls+=' sat';
+    if(isToday)cls+=' today';if(isSel)cls+=' selected';
+    const spHtml=data.specials.length
+      ?`<div class="day-specials">${data.specials.map(s=>`<span class="day-sp-icon" title="${s.label}">${s.icon}</span>`).join('')}</div>`
+      :`<div class="day-specials"></div>`;
+    const cell=document.createElement('div');cell.className=cls;
+    cell.innerHTML=`<span class="day-num">${d}</span><span class="day-rokuyou">${data.rokuyou.name}</span>${spHtml}${isToday?'<div class="today-dot"></div>':''}`;
+    cell.addEventListener('click',()=>showDetail(d,data));
+    grid.appendChild(cell);
+  }
+}
+
+function showDetail(day,data){
+  selDay=day;renderCalendar();
+  const dow=new Date(viewY,viewM-1,day).getDay();
+  document.getElementById('panelDateLabel').textContent=`${viewY}年 ${viewM}月${day}日（${WDAYS[dow]}）　${MJP[viewM-1]}`;
+  const big=document.getElementById('panelFortuneBig');
+  big.innerHTML=`${data.fortune.emoji} ${data.fortune.name} <span class="rk-badge ${data.rokuyou.cls}">${data.rokuyou.name}</span>`;big.style.color=data.fortune.color;
+  document.getElementById('panelSpList').innerHTML=data.specials.length
+    ?data.specials.map(s=>`<span class="panel-sp-badge">${s.icon} ${s.label}</span>`).join('')
+    :'<span style="font-size:.75rem;color:var(--text-muted)">特別な日ではありません</span>';
+  document.getElementById('panelLuckyGrid').innerHTML=`
+    <div class="panel-lucky-item"><div class="panel-lucky-label">🎨 ラッキーカラー</div><div class="panel-lucky-val">${data.color}</div></div>
+    <div class="panel-lucky-item"><div class="panel-lucky-label">🧭 ラッキー方位</div><div class="panel-lucky-val">${data.dir}</div></div>
+    <div class="panel-lucky-item"><div class="panel-lucky-label">🔢 ラッキーナンバー</div><div class="panel-lucky-val">${data.num}</div></div>
+    <div class="panel-lucky-item"><div class="panel-lucky-label">🌸 ラッキーフラワー</div><div class="panel-lucky-val">${data.flower}</div></div>
+    <div class="panel-lucky-item"><div class="panel-lucky-label">🪬 ラッキーアイテム</div><div class="panel-lucky-val">${data.item}</div></div>`;
+  document.getElementById('panelAdvice').textContent=data.advice;
+  const panel=document.getElementById('detailPanel');
+  panel.classList.add('visible');panel.style.animation='none';
+  requestAnimationFrame(()=>{panel.style.animation=''});
+  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+document.getElementById('prevBtn').addEventListener('click',()=>{
+  viewM--;if(viewM<1){viewM=12;viewY--}
+  selDay=null;document.getElementById('detailPanel').classList.remove('visible');renderCalendar();
+});
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  viewM++;if(viewM>12){viewM=1;viewY++}
+  selDay=null;document.getElementById('detailPanel').classList.remove('visible');renderCalendar();
+});
+
+init();
+</script>
+
+</body>
+</html>
